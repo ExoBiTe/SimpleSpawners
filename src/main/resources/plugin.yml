@@ -1,0 +1,6 @@
+name: SimpleSpawners
+main: com.github.exobite.mc.simplespawners.PluginMaster
+version: ${project.version}
+author: ExoBiTe
+description: Defaultdesc
+api-version: 1.17

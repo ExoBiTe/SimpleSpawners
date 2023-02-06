@@ -1,0 +1,5 @@
+#Configuration file for SimpleSpawners by ExoBiTe @ spigoturl
+
+#If this is true, mined Spawners drop directly into the Miners Inventory.
+#Otherwise, they drop as Item where the Spawner was mined.
+DropIntoInventory: false
