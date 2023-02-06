@@ -17,6 +17,7 @@ public class GUI {
     private final GUIManager manager;
     private final Map<Integer, GUIClickAction> actions = new HashMap<>();
     private GUICloseAction onCloseAction;
+    private boolean ignoreNextClose;
 
     protected GUI(GUIManager manager, String name, InventoryType invType) {
         this.manager = manager;
@@ -32,6 +33,10 @@ public class GUI {
 
     protected void closed(InventoryCloseEvent e) {
         if(onCloseAction==null) return;
+        if(ignoreNextClose) {
+            ignoreNextClose = false;
+            return;
+        }
         onCloseAction.closed(e);
     }
 
@@ -59,6 +64,10 @@ public class GUI {
     public void removeGUI() {
         inv.clear();
         manager.removeGUI(this);
+    }
+
+    public void ignoreNextClose() {
+        ignoreNextClose = true;
     }
 
     protected Inventory getInv() {

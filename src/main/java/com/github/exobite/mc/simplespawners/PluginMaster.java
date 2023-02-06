@@ -1,6 +1,7 @@
 package com.github.exobite.mc.simplespawners;
 
 import com.github.exobite.mc.simplespawners.gui.GUIManager;
+import com.github.exobite.mc.simplespawners.playerdata.PlayerDataManager;
 import com.github.exobite.mc.simplespawners.util.*;
 import com.github.exobite.mc.simplespawners.listener.DebugListener;
 import com.github.exobite.mc.simplespawners.listener.PlayerInteraction;
@@ -15,6 +16,8 @@ public class PluginMaster extends JavaPlugin {
     public static PluginMaster getInstance() {
         return instance;
     }
+
+    private PlayerInteraction interactInst;
 
     public static void sendConsoleMessage(Level level, String msg){
         String[] parts = msg.split("\n");
@@ -31,14 +34,21 @@ public class PluginMaster extends JavaPlugin {
         Utils.registerUtils(this);
         Msg.registerMessages();
         CustomSound.registerSoundLibrary(this);
+        PlayerDataManager.register(this);
         GUIManager.register(this);
         Config.setupConfig(this).loadConfig(false);
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerInteraction(this), this);
+        interactInst = new PlayerInteraction(this);
+        getServer().getPluginManager().registerEvents(interactInst, this);
         sendConsoleMessage(Level.INFO, "Running (took "+(System.currentTimeMillis()-t1)+"ms)!");
     }
 
     @Override
     public void onDisable() {
     }
+
+    public PlayerInteraction getInteractInst() {
+        return interactInst;
+    }
+
 }

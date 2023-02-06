@@ -1,13 +1,8 @@
 package com.github.exobite.mc.simplespawners.listener;
 
-import com.github.exobite.mc.simplespawners.gui.GUI;
-import com.github.exobite.mc.simplespawners.gui.GUIClickAction;
-import com.github.exobite.mc.simplespawners.gui.GUICloseAction;
-import com.github.exobite.mc.simplespawners.gui.GUIManager;
-import com.github.exobite.mc.simplespawners.util.Config;
-import com.github.exobite.mc.simplespawners.util.CustomSound;
-import com.github.exobite.mc.simplespawners.util.Msg;
-import com.github.exobite.mc.simplespawners.util.SpawnableEntity;
+import com.github.exobite.mc.simplespawners.playerdata.PlayerData;
+import com.github.exobite.mc.simplespawners.playerdata.PlayerDataManager;
+import com.github.exobite.mc.simplespawners.util.*;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.NamespacedKey;
@@ -15,15 +10,11 @@ import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
-import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
-import org.bukkit.event.inventory.InventoryClickEvent;
-import org.bukkit.event.inventory.InventoryCloseEvent;
-import org.bukkit.event.inventory.InventoryType;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -31,20 +22,15 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
+import java.util.*;
 
 public class PlayerInteraction implements Listener {
-
-    private record BlockLoc(int x, int y, int z){}
 
     private static final String SPAWNER_MENU_PERM = "";
     private static final String BREAK_SPAWNER_PERM = "";
 
     private final NamespacedKey key;
-    private final Map<BlockLoc, GUI[]> inEdit = new HashMap<>();
+    private final List<BlockLoc> inEdit = new ArrayList<>();
 
     public PlayerInteraction(JavaPlugin mainInstance) {
         key = new NamespacedKey(mainInstance, "spawnerType");
@@ -56,14 +42,16 @@ public class PlayerInteraction implements Listener {
         Block b = e.getClickedBlock();
         if(b.getType()!= Material.SPAWNER) return;
         BlockLoc bl = new BlockLoc(b.getLocation().getBlockX(), b.getLocation().getBlockY(), b.getLocation().getBlockZ());
-        if(inEdit.containsKey(bl)){
+        if(inEdit.contains(bl)){
             e.getPlayer().sendMessage(Msg.SPAWNER_ALREADY_IN_EDIT.getMessage());
             return;
         }
+        PlayerData pd = PlayerDataManager.getInstance().getPlayerData(e.getPlayer().getUniqueId());
+        if(!pd.openSpawnerMenu((CreatureSpawner) e.getClickedBlock().getState(), bl)) {
+            return;
+        }
         e.setCancelled(true);
-        GUI[] toOpen = createGuis(e.getPlayer(), (CreatureSpawner) e.getClickedBlock().getState(), bl);
-        toOpen[0].openInventory(e.getPlayer());
-        inEdit.put(bl, toOpen);
+        inEdit.add(bl);
     }
 
     @EventHandler
@@ -117,47 +105,7 @@ public class PlayerInteraction implements Listener {
         cs.setSpawnedType(et);
     }
 
-    private GUI[] createGuis(Player p, CreatureSpawner sp, BlockLoc bl) {
-        //Chest Size is 27, last Row is reserved, so 18
-        //Valid Entities / 27 + 0.5 are the Inventory Pages needed
-        int pagesNeeded = Math.round(SpawnableEntity.getValidAmount() / 18f + 0.5f);
-        GUI[] guis = new GUI[pagesNeeded];
-        System.out.println("Needs "+pagesNeeded+"pages!");
-        int currPage = -1;
-        int idx = 0;
-        for(SpawnableEntity ent:SpawnableEntity.values()) {
-            if(!ent.isValid()) continue;
-            if(idx==0) {
-                //Create new GUI
-                currPage++;
-                guis[currPage] = GUIManager.getInstance().createGUI("Page"+currPage, InventoryType.CHEST);
-                guis[currPage].setOnCloseAction(e -> removeGuis(bl));
-                guis[currPage].setItemWithAction(22, new ItemStack(Material.BARRIER), e -> removeGuis(bl));
-                //Add "Next/Previous Page" Buttons
-                if(currPage>0) {
-                    int finalCurrPage = currPage;
-                    guis[currPage-1].setItemWithAction(26, new ItemStack(Material.EMERALD), e -> guis[finalCurrPage].openInventory(p));
-                    guis[currPage].setItemWithAction(18, new ItemStack(Material.REDSTONE), e -> guis[finalCurrPage-1].openInventory(p));
-                }
-                System.out.println("Created GUI Page "+currPage+"!");
-            }
-            int finalIdx = idx;
-            int finalCurrPage = currPage;
-            guis[currPage].setSlotAction(idx, e -> {
-                e.getWhoClicked().sendMessage("Clicked slot "+ finalIdx +", page "+ finalCurrPage +" for ent "+ent.toString()+"!");
-            });
-            idx++;
-            if(idx>=18) idx=0;
-        }
-        return guis;
-    }
-
-    private void removeGuis(BlockLoc bl) {
-        if(!inEdit.containsKey(bl)) return;
-        GUI[] guis = inEdit.get(bl);
-        for(GUI g : guis) {
-            g.removeGUI();
-        }
+    public void releaseBlockLoc(BlockLoc bl) {
         inEdit.remove(bl);
     }
 
