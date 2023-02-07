@@ -5,11 +5,18 @@ import com.github.exobite.mc.simplespawners.playerdata.PlayerDataManager;
 import com.github.exobite.mc.simplespawners.util.*;
 import com.github.exobite.mc.simplespawners.listener.DebugListener;
 import com.github.exobite.mc.simplespawners.listener.PlayerInteraction;
+import com.github.exobite.mc.simplespawners.web.UpdateChecker;
+import org.bstats.bukkit.Metrics;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
+import org.bukkit.scheduler.BukkitRunnable;
 
 import java.util.logging.Level;
 
 public class PluginMaster extends JavaPlugin {
+
+    private static final int BSTATS_ID = 17666;
+    private static final long UPDATE_CHECK_INTERVAL = 20L * 3600 * 12;  //12 Hours
 
     private static PluginMaster instance;
 
@@ -40,11 +47,34 @@ public class PluginMaster extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
         interactInst = new PlayerInteraction(this);
         getServer().getPluginManager().registerEvents(interactInst, this);
+        enableMetrics();
+        //TODO: Add checkForUpdate when RESOURCE_ID is known!
+        //checkForUpdate();
         sendConsoleMessage(Level.INFO, "Running (took "+(System.currentTimeMillis()-t1)+"ms)!");
     }
 
     @Override
     public void onDisable() {
+        Bukkit.getScheduler().cancelTasks(this);
+    }
+
+    private void enableMetrics() {
+        if(!Config.getInstance().allowMetrics()) return;
+        new Metrics(this, BSTATS_ID);
+    }
+
+    private void checkForUpdate() {
+        if(!Config.getInstance().checkForUpdate()) return;
+        final JavaPlugin inst = this;
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                if(UpdateChecker.getInstance()==null) {
+                    UpdateChecker.createUpdateChecker(inst, false);
+                }
+                UpdateChecker.getInstance().start(false);
+            }
+        }.runTaskTimerAsynchronously(this, 20L, UPDATE_CHECK_INTERVAL);
     }
 
     public PlayerInteraction getInteractInst() {

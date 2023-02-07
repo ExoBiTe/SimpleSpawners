@@ -127,18 +127,4 @@ public class Utils {
         return (toSearch.length() - toSearch.replace(match, "").length()) / match.length();
     }
 
-    public static byte[] uuidToByte(UUID uuid) {
-        ByteBuffer buffer = ByteBuffer.allocate(16);
-        buffer.putLong(uuid.getMostSignificantBits());
-        buffer.putLong(uuid.getLeastSignificantBits());
-        return buffer.array();
-    }
-
-    public static UUID byteToUUID(byte[] bytes) {
-        ByteBuffer buffer = ByteBuffer.wrap(bytes);
-        return new UUID(buffer.getLong(), buffer.getLong());
-    }
-
-
-
 }

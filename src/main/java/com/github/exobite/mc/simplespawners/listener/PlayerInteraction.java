@@ -29,11 +29,13 @@ public class PlayerInteraction implements Listener {
     private static final String SPAWNER_MENU_PERM = "";
     private static final String BREAK_SPAWNER_PERM = "";
 
-    private final NamespacedKey key;
+    private final NamespacedKey itemKey;
+    private final NamespacedKey blockKey;
     private final List<BlockLoc> inEdit = new ArrayList<>();
 
     public PlayerInteraction(JavaPlugin mainInstance) {
-        key = new NamespacedKey(mainInstance, "spawnerType");
+        itemKey = new NamespacedKey(mainInstance, "spawnerType");
+        blockKey = new NamespacedKey(mainInstance, "isCustomSpawner");
     }
 
     @EventHandler
@@ -42,11 +44,12 @@ public class PlayerInteraction implements Listener {
         Block b = e.getClickedBlock();
         if(b.getType()!= Material.SPAWNER) return;
         BlockLoc bl = new BlockLoc(b.getLocation().getBlockX(), b.getLocation().getBlockY(), b.getLocation().getBlockZ());
+        PlayerData pd = PlayerDataManager.getInstance().getPlayerData(e.getPlayer().getUniqueId());
+        if(!pd.canOpenSpawnerMenu()) return;
         if(inEdit.contains(bl)){
             e.getPlayer().sendMessage(Msg.SPAWNER_ALREADY_IN_EDIT.getMessage());
             return;
         }
-        PlayerData pd = PlayerDataManager.getInstance().getPlayerData(e.getPlayer().getUniqueId());
         if(!pd.openSpawnerMenu((CreatureSpawner) e.getClickedBlock().getState(), bl)) {
             return;
         }
@@ -61,11 +64,13 @@ public class PlayerInteraction implements Listener {
         if(!mh.getType().toString().toLowerCase(Locale.ROOT).contains("pickaxe")) return;
         if(mh.getEnchantmentLevel(Enchantment.SILK_TOUCH) <= 0) return;
         if(!e.getPlayer().hasPermission(BREAK_SPAWNER_PERM)) return;
-        EntityType et = ((CreatureSpawner)e.getBlock().getState()).getSpawnedType();
+        CreatureSpawner sp = (CreatureSpawner)e.getBlock().getState();
+        if(!isMineable(sp)) return;
+        EntityType et = sp.getSpawnedType();
         ItemStack spawner = new ItemStack(Material.SPAWNER, 1);
         ItemMeta im = spawner.getItemMeta();
         assert im != null;
-        im.getPersistentDataContainer().set(key, PersistentDataType.STRING, et.toString());
+        im.getPersistentDataContainer().set(itemKey, PersistentDataType.STRING, et.toString());
         im.setLore(List.of(Msg.SPAWN_ITEM_LORE.getMessage(et.toString())));
         spawner.setItemMeta(im);
         if(!Config.getInstance().dropIntoInventory()) {
@@ -93,7 +98,7 @@ public class PlayerInteraction implements Listener {
         ItemMeta im = is.getItemMeta();
         if(im==null) return;
         PersistentDataContainer pdc = im.getPersistentDataContainer();
-        String spawnType = pdc.get(key, PersistentDataType.STRING);
+        String spawnType = pdc.get(itemKey, PersistentDataType.STRING);
         if(spawnType==null) return;
         EntityType et;
         try {
@@ -103,6 +108,15 @@ public class PlayerInteraction implements Listener {
         }
         CreatureSpawner cs = (CreatureSpawner) e.getBlock().getState();
         cs.setSpawnedType(et);
+        cs.update();
+        System.out.println("Set spawner type to "+et+"!");
+        cs.getPersistentDataContainer().set(blockKey, PersistentDataType.BYTE, (byte) 0xFF); //Value is irrelevant
+    }
+
+    private boolean isMineable(CreatureSpawner sp) {
+        Config cfg = Config.getInstance();
+        boolean hasBlockPdcKey = sp.getPersistentDataContainer().has(blockKey, PersistentDataType.BYTE);
+        return hasBlockPdcKey && cfg.allowCustomSpawnerMining() || cfg.allowNaturalSpawnerMining() && !hasBlockPdcKey;
     }
 
     public void releaseBlockLoc(BlockLoc bl) {

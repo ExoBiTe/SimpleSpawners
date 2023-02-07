@@ -24,6 +24,11 @@ public class GUI {
         inv = Bukkit.createInventory(null, invType, name);
     }
 
+    protected GUI(GUIManager manager, String name, int size) {
+        this.manager = manager;
+        inv = Bukkit.createInventory(null, size, name);
+    }
+
     protected void clicked(InventoryClickEvent e) {
         int slot = e.getSlot();
         if(!actions.containsKey(slot)) return;

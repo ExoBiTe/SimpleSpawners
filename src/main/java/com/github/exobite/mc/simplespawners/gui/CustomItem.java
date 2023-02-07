@@ -14,6 +14,18 @@ import java.util.Map;
 
 public class CustomItem {
 
+    public static CustomItem getGUICloseButton() {
+        return new CustomItem(Material.BARRIER).setDisplayName(ChatColor.RED + "EXIT");
+    }
+
+    public static CustomItem getGUINextPageButton() {
+        return new CustomItem(Material.EMERALD).setDisplayName(ChatColor.GOLD + "Next Page");
+    }
+
+    public static CustomItem getGUIPrevPageButton() {
+        return new CustomItem(Material.REDSTONE).setDisplayName(ChatColor.GOLD + "Previous Page");
+    }
+
     private String name;
     private List<String> lore;
     private Material mat;

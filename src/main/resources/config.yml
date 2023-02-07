@@ -1,5 +1,11 @@
 #Configuration file for SimpleSpawners by ExoBiTe @ spigoturl
 
+#If this is set to true, natural Spawners can be mined with any Silk Touch Pickaxe
+AllowNaturalSpawnerMining: true
+
+#If this is set to true, custom Spawners (e.g. Spawners modified by this Plugin) can be mined with any Silk Touch Pickaxe
+AllowCustomSpawnerMining: true
+
 #If this is true, mined Spawners drop directly into the Miners Inventory.
 #Otherwise, they drop as Item where the Spawner was mined.
 DropIntoInventory: false

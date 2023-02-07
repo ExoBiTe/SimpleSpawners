@@ -39,6 +39,12 @@ public class GUIManager implements Listener {
         return g;
     }
 
+    public GUI createGUI(String name, int size) {
+        GUI g = new GUI(this, name, size);
+        guis.put(g.getInv(), g);
+        return g;
+    }
+
     protected void removeGUI(GUI g) {
         guis.remove(g.getInv());
         /*for(HumanEntity he:g.getInv().getViewers()) {
