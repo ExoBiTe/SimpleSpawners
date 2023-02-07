@@ -20,7 +20,17 @@ public enum Msg {
 
     SPAWNER_ALREADY_IN_EDIT(ChatColor.RED+"You can't edit this spawner, as it is already being edited by someone else!",
             true,
-            "");
+            ""),
+
+    CMD_ERR_NO_PERMISSION(ChatColor.RED+"You don't have the Permission to do that.",
+            true,
+            ""),
+
+    CMD_SS_RELOAD_STARTED("",
+            true,
+            ""),
+
+    ;
 
     private static final String FILE_NAME = "lang.yml";
     private static PluginMaster main;

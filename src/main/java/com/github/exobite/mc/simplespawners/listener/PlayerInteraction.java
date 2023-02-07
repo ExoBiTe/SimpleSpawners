@@ -10,6 +10,7 @@ import org.bukkit.block.Block;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.EntityType;
+import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
@@ -26,8 +27,9 @@ import java.util.*;
 
 public class PlayerInteraction implements Listener {
 
-    private static final String SPAWNER_MENU_PERM = "";
-    private static final String BREAK_SPAWNER_PERM = "";
+    private static final String SPAWNER_MENU_PERM = "simplespawners.interact.usespawnermenu";
+    private static final String BREAK_NATURAL_SPAWNER = "";
+    private static final String BREAK_CUSTOM_SPAWNER = "";
 
     private final NamespacedKey itemKey;
     private final NamespacedKey blockKey;
@@ -63,9 +65,8 @@ public class PlayerInteraction implements Listener {
         ItemStack mh = e.getPlayer().getInventory().getItemInMainHand();
         if(!mh.getType().toString().toLowerCase(Locale.ROOT).contains("pickaxe")) return;
         if(mh.getEnchantmentLevel(Enchantment.SILK_TOUCH) <= 0) return;
-        if(!e.getPlayer().hasPermission(BREAK_SPAWNER_PERM)) return;
         CreatureSpawner sp = (CreatureSpawner)e.getBlock().getState();
-        if(!isMineable(sp)) return;
+        if(!isMineable(e.getPlayer(), sp)) return;
         EntityType et = sp.getSpawnedType();
         ItemStack spawner = new ItemStack(Material.SPAWNER, 1);
         ItemMeta im = spawner.getItemMeta();
@@ -108,15 +109,13 @@ public class PlayerInteraction implements Listener {
         }
         CreatureSpawner cs = (CreatureSpawner) e.getBlock().getState();
         cs.setSpawnedType(et);
-        cs.update();
-        System.out.println("Set spawner type to "+et+"!");
         cs.getPersistentDataContainer().set(blockKey, PersistentDataType.BYTE, (byte) 0xFF); //Value is irrelevant
+        cs.update();
     }
 
-    private boolean isMineable(CreatureSpawner sp) {
-        Config cfg = Config.getInstance();
+    private boolean isMineable(Player p, CreatureSpawner sp) {
         boolean hasBlockPdcKey = sp.getPersistentDataContainer().has(blockKey, PersistentDataType.BYTE);
-        return hasBlockPdcKey && cfg.allowCustomSpawnerMining() || cfg.allowNaturalSpawnerMining() && !hasBlockPdcKey;
+        return (hasBlockPdcKey && p.hasPermission(BREAK_CUSTOM_SPAWNER)) || (!hasBlockPdcKey && p.hasPermission(BREAK_NATURAL_SPAWNER));
     }
 
     public void releaseBlockLoc(BlockLoc bl) {

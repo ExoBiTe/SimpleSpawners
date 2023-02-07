@@ -4,3 +4,34 @@ version: ${project.version}
 author: ExoBiTe
 description: Defaultdesc
 api-version: 1.17
+
+commands:
+  SimpleSpawners:
+    description: SimpleSpawners Main Command
+    usage: /SimpleSpawners
+    aliases: ss
+
+permissions:
+  simplespawners.cmd.*:
+    default: op
+    children:
+      simplespawners.cmd.reload: true
+
+  simplespawners.cmd.reload:
+    description: Allows usage of /SimpleSpawners reload
+
+  simplespawners.interact.usespawnermenu:
+    description: Allows to change the Spawned Entity for MobSpawners
+    default: op
+
+  simplespawners.mine.natural:
+    description: Allows to break Natural Mob Spawners with a Silk Touch Pickaxe
+
+  simplespawners.mine.custom:
+    description: Allows to break Natural Mob Spawners with a Silk Touch Pickaxe
+
+  simplespawners.mine.*:
+    default: op
+    children:
+      simplespawners.mine.natural: true
+      simplespawners.mine.custom: true

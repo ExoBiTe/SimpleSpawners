@@ -1,5 +1,6 @@
 package com.github.exobite.mc.simplespawners;
 
+import com.github.exobite.mc.simplespawners.command.SimpleSpawnersCmd;
 import com.github.exobite.mc.simplespawners.gui.GUIManager;
 import com.github.exobite.mc.simplespawners.playerdata.PlayerDataManager;
 import com.github.exobite.mc.simplespawners.util.*;
@@ -47,6 +48,7 @@ public class PluginMaster extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
         interactInst = new PlayerInteraction(this);
         getServer().getPluginManager().registerEvents(interactInst, this);
+        getServer().getPluginCommand("simplespawners").setExecutor(new SimpleSpawnersCmd());
         enableMetrics();
         //TODO: Add checkForUpdate when RESOURCE_ID is known!
         //checkForUpdate();

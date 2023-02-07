@@ -53,8 +53,6 @@ public class Config {
         ConfigValue<Boolean> allowMetrics = new ConfigValue<>("AllowMetrics", true, Boolean.class);
         ConfigValue<Character> colorCode = new ConfigValue<>("ColorChar", '&', Character.class);
         ConfigValue<Boolean> dropIntoInventory = new ConfigValue<>("DropIntoInventory", false, Boolean.class);
-        ConfigValue<Boolean> allowNaturalSpawnerMining = new ConfigValue<>("AllowNaturalSpawnerMining", true, Boolean.class);
-        ConfigValue<Boolean> allowCustomSpawnerMining = new ConfigValue<>("AllowCustomSpawnerMining", true, Boolean.class);
 
         ConfigValue<?> getConfigValueByKey(String key) {
             for(ConfigValue<?> v : configValues) {
@@ -190,14 +188,6 @@ public class Config {
 
     public boolean dropIntoInventory() {
         return currentConf.dropIntoInventory.value;
-    }
-
-    public boolean allowNaturalSpawnerMining() {
-        return currentConf.allowNaturalSpawnerMining.value;
-    }
-
-    public boolean allowCustomSpawnerMining() {
-        return currentConf.allowCustomSpawnerMining.value;
     }
 
     //Config Setters
