@@ -30,9 +30,10 @@ public class UpdateChecker {
     }
 
     private static final String MY_USER_AGENT = "ExobitePlugin";
-    private static final int RESOURCE_ID = 107370;
+    private static final int RESOURCE_ID = 707370;
     private static final String GET_LATEST_VERSION = "https://api.spiget.org/v2/resources/"+RESOURCE_ID+"/versions/latest";
     private static final String GET_LATEST_UPDATE = "https://api.spiget.org/v2/resources/"+RESOURCE_ID+"/updates?size=1&sort=-date";
+    private static final String PLUGIN_DOWNLOAD_PAGE = "https://www.spigotmc.org/resources/"+RESOURCE_ID+"/";
 
     private final JavaPlugin main;
 

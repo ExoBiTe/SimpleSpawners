@@ -1,11 +1,23 @@
 #Configuration file for SimpleSpawners by ExoBiTe @ spigoturl
 
-#If this is set to true, natural Spawners can be mined with any Silk Touch Pickaxe
-AllowNaturalSpawnerMining: true
-
-#If this is set to true, custom Spawners (e.g. Spawners modified by this Plugin) can be mined with any Silk Touch Pickaxe
-AllowCustomSpawnerMining: true
+#If set to true, the Plugin tries to use Vault.
+#If Vault isn't installed on the Server, it defaults to its own Economy System.
+UseVault: false
 
 #If this is true, mined Spawners drop directly into the Miners Inventory.
 #Otherwise, they drop as Item where the Spawner was mined.
 DropIntoInventory: false
+
+ItemPrices:
+  DEFAULT: GOLD_INGOT, 20
+
+EconomyPrices:
+  DEFAULT: 20.0
+
+#Blacklisted Entities
+#Players with the 'simplespawners.ignoreblacklist'-permission ignore this list
+#Be careful with that Permission!
+EntityBlacklist:
+  - PRIMED_TNT
+  - ENDER_DRAGON
+  - CREEPER

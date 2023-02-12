@@ -4,6 +4,7 @@ version: ${project.version}
 author: ExoBiTe
 description: Defaultdesc
 api-version: 1.17
+softdepend: [Vault, PlaceholderAPI]
 
 commands:
   SimpleSpawners:
@@ -12,6 +13,13 @@ commands:
     aliases: ss
 
 permissions:
+  simplespawners.*:
+    default: op
+    children:
+      simplespawners.cmd.*: true
+      simplespawners.interact.changespawner: true
+      simplespawners.mine.*: true
+
   simplespawners.cmd.*:
     default: op
     children:
@@ -20,9 +28,15 @@ permissions:
   simplespawners.cmd.reload:
     description: Allows usage of /SimpleSpawners reload
 
-  simplespawners.interact.usespawnermenu:
+  simplespawners.interact.changespawner:
     description: Allows to change the Spawned Entity for MobSpawners
     default: op
+
+  simplespawners.mine.*:
+    default: op
+    children:
+      simplespawners.mine.natural: true
+      simplespawners.mine.custom: true
 
   simplespawners.mine.natural:
     description: Allows to break Natural Mob Spawners with a Silk Touch Pickaxe
@@ -30,8 +44,5 @@ permissions:
   simplespawners.mine.custom:
     description: Allows to break Natural Mob Spawners with a Silk Touch Pickaxe
 
-  simplespawners.mine.*:
-    default: op
-    children:
-      simplespawners.mine.natural: true
-      simplespawners.mine.custom: true
+  simplespawners.ignoreblacklist:
+    description: Allows to set blacklisted Entities to spawners

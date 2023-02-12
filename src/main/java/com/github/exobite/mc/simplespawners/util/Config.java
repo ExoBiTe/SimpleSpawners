@@ -1,6 +1,7 @@
 package com.github.exobite.mc.simplespawners.util;
 
 import com.github.exobite.mc.simplespawners.PluginMaster;
+import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -53,6 +54,11 @@ public class Config {
         ConfigValue<Boolean> allowMetrics = new ConfigValue<>("AllowMetrics", true, Boolean.class);
         ConfigValue<Character> colorCode = new ConfigValue<>("ColorChar", '&', Character.class);
         ConfigValue<Boolean> dropIntoInventory = new ConfigValue<>("DropIntoInventory", false, Boolean.class);
+        ConfigValue<Boolean> useVault = new ConfigValue<>("UseVault", false, Boolean.class);
+        ConfigValue<List> entityBlacklist = new ConfigValue<>("EntityBlacklist", null, List.class);
+
+        ConfigValue<ConfigurationSection> itemPrices = new ConfigValue<>("ItemPrices", null, ConfigurationSection.class);
+        ConfigValue<ConfigurationSection> vaultPrices = new ConfigValue<>("EconPrices", null, ConfigurationSection.class);
 
         ConfigValue<?> getConfigValueByKey(String key) {
             for(ConfigValue<?> v : configValues) {
@@ -132,6 +138,11 @@ public class Config {
             value.setValue(conf.get(value.key, value.value));
         }
         //Validation
+        if(Boolean.TRUE.equals(cv.useVault.value) && !PluginMaster.getInstance().useVault()) {
+            //Send Warning to Console, disable cv.useVault
+            cv.useVault.value = false;
+            PluginMaster.sendConsoleMessage(Level.WARNING, "Couldn't find Vault. Defaulting to Item-Based Economy.");
+        }
         return cv;
     }
 
@@ -189,6 +200,24 @@ public class Config {
     public boolean dropIntoInventory() {
         return currentConf.dropIntoInventory.value;
     }
+
+    public boolean useVault() {
+        return currentConf.useVault.value;
+    }
+
+    public List<String> getEntityBlacklist() {
+        return currentConf.entityBlacklist.value;
+    }
+
+    public ConfigurationSection getItemPrices() {
+        return currentConf.itemPrices.value;
+    }
+
+    public ConfigurationSection getEconPrices() {
+        return currentConf.vaultPrices.value;
+    }
+
+
 
     //Config Setters
 

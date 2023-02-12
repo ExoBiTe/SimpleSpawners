@@ -5,6 +5,7 @@ import org.bukkit.Location;
 import org.bukkit.Sound;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Entity;
 
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +18,16 @@ import java.util.logging.Level;
 public enum CustomSound {
 
     SPAWNER_DROPPED_INTO_INV(Sound.ENTITY_ITEM_PICKUP, 1, 1,
-            "Played when a mined spawner is dropped into the Miners Inventory");
+            "Played when a mined spawner is dropped into the Miners Inventory"),
+
+    SPAWNER_TYPE_CHANGED(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1,
+            ""),
+
+    TRANSACTION_ERROR(Sound.BLOCK_ANVIL_LAND, 1, 0.1f,
+            ""),
+
+
+    ;
 
     private static final String FILE_NAME = "sounds.yml";
     private static PluginMaster main;
@@ -130,7 +140,12 @@ public enum CustomSound {
         this.sound = newSound;
     }
 
-    public void playSound(Location loc) {
+    public void playSound(Entity e) {
+        if(e==null || e.getLocation().getWorld()==null) return;
+        e.getLocation().getWorld().playSound(e, sound, v1, v2);
+    }
+
+    public void playSoundAt(Location loc) {
         if(loc==null || loc.getWorld()==null) return;
         loc.getWorld().playSound(loc, sound, v1, v2);
     }

@@ -15,7 +15,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BlockBreakEvent;
+import org.bukkit.event.block.BlockExplodeEvent;
 import org.bukkit.event.block.BlockPlaceEvent;
+import org.bukkit.event.entity.EntityExplodeEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
@@ -27,13 +29,13 @@ import java.util.*;
 
 public class PlayerInteraction implements Listener {
 
-    private static final String SPAWNER_MENU_PERM = "simplespawners.interact.usespawnermenu";
-    private static final String BREAK_NATURAL_SPAWNER = "";
-    private static final String BREAK_CUSTOM_SPAWNER = "";
+    private static final String SPAWNER_MENU_PERM = "simplespawners.interact.changespawner";
+    private static final String BREAK_NATURAL_SPAWNER = "simplespawners.mine.natural";
+    private static final String BREAK_CUSTOM_SPAWNER = "simplespawners.mine.custom";
 
     private final NamespacedKey itemKey;
     private final NamespacedKey blockKey;
-    private final List<BlockLoc> inEdit = new ArrayList<>();
+    private final Map<BlockLoc, PlayerData> inEdit = new HashMap<>();
 
     public PlayerInteraction(JavaPlugin mainInstance) {
         itemKey = new NamespacedKey(mainInstance, "spawnerType");
@@ -48,7 +50,7 @@ public class PlayerInteraction implements Listener {
         BlockLoc bl = new BlockLoc(b.getLocation().getBlockX(), b.getLocation().getBlockY(), b.getLocation().getBlockZ());
         PlayerData pd = PlayerDataManager.getInstance().getPlayerData(e.getPlayer().getUniqueId());
         if(!pd.canOpenSpawnerMenu()) return;
-        if(inEdit.contains(bl)){
+        if(inEdit.containsKey(bl)){
             e.getPlayer().sendMessage(Msg.SPAWNER_ALREADY_IN_EDIT.getMessage());
             return;
         }
@@ -56,17 +58,24 @@ public class PlayerInteraction implements Listener {
             return;
         }
         e.setCancelled(true);
-        inEdit.add(bl);
+        inEdit.put(bl, pd);
     }
 
     @EventHandler
     private void onBlockBreak(BlockBreakEvent e) {
         if(e.getBlock().getType()!=Material.SPAWNER) return;
         ItemStack mh = e.getPlayer().getInventory().getItemInMainHand();
-        if(!mh.getType().toString().toLowerCase(Locale.ROOT).contains("pickaxe")) return;
-        if(mh.getEnchantmentLevel(Enchantment.SILK_TOUCH) <= 0) return;
+        BlockLoc bl = new BlockLoc(e.getBlock().getX(), e.getBlock().getY(), e.getBlock().getZ());
+        if(!mh.getType().toString().toLowerCase(Locale.ROOT).contains("pickaxe")
+                || mh.getEnchantmentLevel(Enchantment.SILK_TOUCH) <= 0) {
+            forceClose(bl);
+            return;
+        }
         CreatureSpawner sp = (CreatureSpawner)e.getBlock().getState();
-        if(!isMineable(e.getPlayer(), sp)) return;
+        if(!isMineable(e.getPlayer(), sp)) {
+            forceClose(bl);
+            return;
+        }
         EntityType et = sp.getSpawnedType();
         ItemStack spawner = new ItemStack(Material.SPAWNER, 1);
         ItemMeta im = spawner.getItemMeta();
@@ -82,7 +91,7 @@ public class PlayerInteraction implements Listener {
                 //Player Inventory is full, drop Item
                 dropItem(spawner, e.getBlock().getLocation());
             }else{
-                CustomSound.SPAWNER_DROPPED_INTO_INV.playSound(e.getPlayer().getLocation());
+                CustomSound.SPAWNER_DROPPED_INTO_INV.playSound(e.getPlayer());
             }
         }
     }
@@ -91,6 +100,30 @@ public class PlayerInteraction implements Listener {
         assert l.getWorld() != null;
         l.getWorld().dropItemNaturally(l.add(0.5, 0.5, 0.5), is);
     }
+
+    @EventHandler
+    private void onExplosion(BlockExplodeEvent e) {
+        handleExplosion(e.blockList());
+    }
+
+    @EventHandler
+    private void onExplosion(EntityExplodeEvent e) {
+        handleExplosion(e.blockList());
+    }
+
+    private void handleExplosion(List<Block> blocks) {
+        for(Block b:blocks) {
+            BlockLoc bl = new BlockLoc(b.getX(), b.getY(), b.getZ());
+            if(inEdit.containsKey(bl)) forceClose(bl);
+        }
+    }
+
+    private void forceClose(BlockLoc bl) {
+        PlayerData pd = inEdit.get(bl);
+        if(pd==null) return;
+        pd.closeMenu();
+    }
+
 
     @EventHandler
     private void onBlockPlace(BlockPlaceEvent e) {

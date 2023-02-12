@@ -15,7 +15,7 @@ import java.util.Map;
 public class CustomItem {
 
     public static CustomItem getGUICloseButton() {
-        return new CustomItem(Material.BARRIER).setDisplayName(ChatColor.RED + "EXIT");
+        return new CustomItem(Material.BARRIER).setDisplayName(ChatColor.RED + "Exit");
     }
 
     public static CustomItem getGUINextPageButton() {

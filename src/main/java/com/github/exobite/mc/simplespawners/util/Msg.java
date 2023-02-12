@@ -22,6 +22,22 @@ public enum Msg {
             true,
             ""),
 
+    SPAWNER_GUI_TITLE(ChatColor.AQUA+"Monster Spawner",
+            true,
+            ""),
+
+    ECO_TRANSACTION_ERR_INSUFFICIENT_FUNDS(ChatColor.RED+"Transaction failed, you have insufficient funds",
+            true,
+            ""),
+
+    ECO_TRANSACTION_UNKNOWN_ERR(ChatColor.RED+"Transaction failed, an unknown error occurred",
+            true,
+            ""),
+
+    ECO_TRANSACTION_SUCCESS("",
+            true,
+            ""),
+
     CMD_ERR_NO_PERMISSION(ChatColor.RED+"You don't have the Permission to do that.",
             true,
             ""),

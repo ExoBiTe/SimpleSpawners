@@ -71,7 +71,7 @@ public enum SpawnableEntity {
                     "4NWZlMDBkM2NmMjUyYTA0ZDZmMmViMjUyMWZlMjk5YzA4ZTBkOGI3ZWRiZjk2Mjc0MGEyMzkwOSJ9fX0="),
     //TODO: Add Fireball Texture
     FIREBALL(EntityType.FIREBALL, ""),
-    FIREWORK_ROCKET(EntityType.FIREWORK,
+    FIREWORK(EntityType.FIREWORK,
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzAyZjQ4ZjM" +
                     "0ZDIyZGVkNzQwNGY3NmU4YTEzMmFmNWQ3OTE5YzhkY2Q1MWRmNmU3YTg1ZGRmYWM4NWFiIn19fQ=="),
     FOX(EntityType.FOX,
@@ -114,7 +114,7 @@ public enum SpawnableEntity {
     MAGMA_CUBE(EntityType.MAGMA_CUBE,
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYTFjOTdhMDZ" +
                     "lZmRlMDRkMDAyODdiZjIwNDE2NDA0YWIyMTAzZTEwZjA4NjIzMDg3ZTFiMGMxMjY0YTFjMGYwYyJ9fX0="),
-    MOOSHROOM(EntityType.MUSHROOM_COW,
+    MUSHROOM_COW(EntityType.MUSHROOM_COW,
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvOWE2ZGI0MWV" +
                     "kZjUzZjU4ZWMwNWIzZmE4NmYwNTE3Y2RlMjI4NDJiYjA3MWI2YjU2ZDE2MDdmYzdkZTcwZGEyYiJ9fX0="),
     MULE(EntityType.MULE,
@@ -144,6 +144,9 @@ public enum SpawnableEntity {
     PILLAGER(EntityType.PILLAGER,
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMzJmYjgwYTZ" +
                     "iNjgzM2UzMWQ5Y2U4MzEzYTU0Nzc3NjQ1ZjljMWU1NWI4MTA5MThhNzA2ZTdiY2M4ZDM1YTVhMiJ9fX0="),
+    PRIMED_TNT(EntityType.PRIMED_TNT,
+            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTU3M2Q3MDQ" +
+                    "2ZDZlMDgxOTgzOTBhYTU2YzhmODY3OGMxNmQ0NDA3YWY5ZjIxNGJmMDI5MWYzYzdkYjFmMzc5YSJ9fX0="),
     POLAR_BEAR(EntityType.POLAR_BEAR,
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvYzRmZTkyNjk" +
                     "yMmZiYjQwNmYzNDNiMzRhMTBiYjk4OTkyY2VlNDQxMDEzN2QzZjg4MDk5NDI3YjIyZGUzYWI5MCJ9fX0="),
@@ -177,7 +180,7 @@ public enum SpawnableEntity {
     SLIME(EntityType.SLIME,
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvZTMwYWFlYjN" +
                     "jMmI2NmI5Yjg3OTA2OGVlNWMzZjY5YzhhZjg1YWUwOWI1OTk3NzJlY2U1YjM0MzdjMzA1YTdmYSJ9fX0="),
-    SNOW_GOLEM(EntityType.SNOWMAN,
+    SNOWMAN(EntityType.SNOWMAN,
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTc3N2QzZGE" +
                     "0MzI5YmRmNjBlOWQyNjc4YWI3OTA4MzRkZTkwOTZmOWQ4NmEwZTk5YTFhYjhhNDNhYTVlYzFlNCJ9fX0="),
     SPIDER(EntityType.SPIDER,
@@ -190,9 +193,6 @@ public enum SpawnableEntity {
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMmM1MDk3OTE" +
                     "2YmMwNTY1ZDMwNjAxYzBlZWJmZWIyODcyNzdhMzRlODY3YjRlYTQzYzYzODE5ZDUzZTg5ZWRlNyJ9fX0="),
     TADPOLE(),
-    TNT(EntityType.PRIMED_TNT,
-            "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNTU3M2Q3MDQ" +
-                    "2ZDZlMDgxOTgzOTBhYTU2YzhmODY3OGMxNmQ0NDA3YWY5ZjIxNGJmMDI5MWYzYzdkYjFmMzc5YSJ9fX0="),
     TRADER_LLAMA(EntityType.TRADER_LLAMA,
             "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvNzA4N2E1NTZ" +
                     "kNGZmYTk1ZWNkMjg0NGYzNTBkYzQzZTI1NGU1ZDUzNWZhNTk2ZjU0MGQ3ZTc3ZmE2N2RmNDY5NiJ9fX0="),
@@ -264,6 +264,16 @@ public enum SpawnableEntity {
                     "eyJ0ZXh0dXJlcyI6eyJTS0lOIjp7InVybCI6Imh0dHA6Ly90ZXh0dXJlcy5taW5lY3JhZnQubmV0L3RleHR1cmUvMTk" +
                             "yMzdhMDY3MjEyMDEzMmY2MWE2ZGIyZjQ1ZDE3N2Y4YWQ4Y2UxYTlmYWQ5MTMyNzRjNzUyYTUxNGQ4Y2I1NSJ9fX0=");
         }
+
+        //Blacklist Entities
+        for(String s:Config.getInstance().getEntityBlacklist()) {
+            try {
+                SpawnableEntity.valueOf(s).isBlacklisted = true;
+            }catch (IllegalArgumentException ignored) {
+                PluginMaster.sendConsoleMessage(Level.WARNING, "Unknown Entity '"+s+"' in Blacklist found!");
+            }
+        }
+
     }
 
     private static void countValidUp() {
@@ -277,6 +287,7 @@ public enum SpawnableEntity {
     private String texture;
     private EntityType type;
     private boolean isValid;
+    private boolean isBlacklisted;
 
     SpawnableEntity() {
         this.isValid = false;
@@ -306,6 +317,10 @@ public enum SpawnableEntity {
 
     public EntityType getType() {
         return type;
+    }
+
+    public boolean isBlacklisted() {
+        return isBlacklisted;
     }
 
     public ItemStack getItemStack() {

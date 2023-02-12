@@ -6,6 +6,7 @@ import com.github.exobite.mc.simplespawners.playerdata.PlayerDataManager;
 import com.github.exobite.mc.simplespawners.util.*;
 import com.github.exobite.mc.simplespawners.listener.DebugListener;
 import com.github.exobite.mc.simplespawners.listener.PlayerInteraction;
+import com.github.exobite.mc.simplespawners.vault.VaultHelper;
 import com.github.exobite.mc.simplespawners.web.UpdateChecker;
 import org.bstats.bukkit.Metrics;
 import org.bukkit.Bukkit;
@@ -25,6 +26,9 @@ public class PluginMaster extends JavaPlugin {
         return instance;
     }
 
+    private boolean useVault;
+    private boolean usePapi;
+
     private PlayerInteraction interactInst;
 
     public static void sendConsoleMessage(Level level, String msg){
@@ -38,26 +42,33 @@ public class PluginMaster extends JavaPlugin {
     public void onEnable() {
         long t1 = System.currentTimeMillis();
         instance = this;
-        SpawnableEntity.init();
         Utils.registerUtils(this);
         Msg.registerMessages();
         CustomSound.registerSoundLibrary(this);
         PlayerDataManager.register(this);
         GUIManager.register(this);
+        setupExternals();
         Config.setupConfig(this).loadConfig(false);
+        SpawnableEntity.init();
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
         interactInst = new PlayerInteraction(this);
         getServer().getPluginManager().registerEvents(interactInst, this);
         getServer().getPluginCommand("simplespawners").setExecutor(new SimpleSpawnersCmd());
         enableMetrics();
         //TODO: Add checkForUpdate when RESOURCE_ID is known!
-        //checkForUpdate();
+        checkForUpdate();
         sendConsoleMessage(Level.INFO, "Running (took "+(System.currentTimeMillis()-t1)+"ms)!");
     }
 
     @Override
     public void onDisable() {
         Bukkit.getScheduler().cancelTasks(this);
+    }
+
+    private void setupExternals() {
+        if(getServer().getPluginManager().getPlugin("Vault") != null) {
+            useVault = VaultHelper.register(this);
+        }
     }
 
     private void enableMetrics() {
@@ -81,6 +92,14 @@ public class PluginMaster extends JavaPlugin {
 
     public PlayerInteraction getInteractInst() {
         return interactInst;
+    }
+
+    public boolean useVault() {
+        return useVault;
+    }
+
+    public boolean usePapi() {
+        return usePapi;
     }
 
 }
