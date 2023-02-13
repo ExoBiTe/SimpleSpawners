@@ -1,6 +1,7 @@
 package com.github.exobite.mc.simplespawners;
 
 import com.github.exobite.mc.simplespawners.command.SimpleSpawnersCmd;
+import com.github.exobite.mc.simplespawners.economy.EconManager;
 import com.github.exobite.mc.simplespawners.gui.GUIManager;
 import com.github.exobite.mc.simplespawners.playerdata.PlayerDataManager;
 import com.github.exobite.mc.simplespawners.util.*;
@@ -50,6 +51,7 @@ public class PluginMaster extends JavaPlugin {
         setupExternals();
         Config.setupConfig(this).loadConfig(false);
         SpawnableEntity.init();
+        EconManager.register();
         getServer().getPluginManager().registerEvents(new DebugListener(), this);
         interactInst = new PlayerInteraction(this);
         getServer().getPluginManager().registerEvents(interactInst, this);

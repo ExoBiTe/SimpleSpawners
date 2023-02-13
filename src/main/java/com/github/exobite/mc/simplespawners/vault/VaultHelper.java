@@ -37,5 +37,9 @@ public class VaultHelper {
         return eco.withdrawPlayer(p, amount).transactionSuccess();
     }
 
+    public String formatCurrency(float amount) {
+        return eco.format(amount);
+    }
+
 
 }

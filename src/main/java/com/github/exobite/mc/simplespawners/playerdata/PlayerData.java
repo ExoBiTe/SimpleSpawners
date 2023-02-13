@@ -1,9 +1,11 @@
 package com.github.exobite.mc.simplespawners.playerdata;
 
 import com.github.exobite.mc.simplespawners.PluginMaster;
-import com.github.exobite.mc.simplespawners.gui.CustomItem;
+import com.github.exobite.mc.simplespawners.economy.EconManager;
+import com.github.exobite.mc.simplespawners.economy.IEconomy;
 import com.github.exobite.mc.simplespawners.gui.GUI;
 import com.github.exobite.mc.simplespawners.gui.GUIManager;
+import com.github.exobite.mc.simplespawners.gui.CustomItem;
 import com.github.exobite.mc.simplespawners.util.BlockLoc;
 import com.github.exobite.mc.simplespawners.util.Msg;
 import com.github.exobite.mc.simplespawners.util.SpawnableEntity;
@@ -13,6 +15,8 @@ import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class PlayerData {
@@ -39,6 +43,7 @@ public class PlayerData {
         openMenuLoc = bl;
         int pagesNeeded = Math.round(SpawnableEntity.getValidAmount() / (GUI_SIZE-9f) + 0.5f);
         spawnerMenu = new GUI[pagesNeeded];
+        Player p = p();
         int currPage = -1;
         int idx = 0;
         boolean allowBlacklistedEntities = p().hasPermission(IGNORE_BLACKLIST_PERM);
@@ -68,7 +73,10 @@ public class PlayerData {
             }
             int finalIdx = idx;
             int finalCurrPage = currPage;
-            spawnerMenu[currPage].setItemWithAction(idx, ent.getItemStack(), e -> {
+            CustomItem ci = new CustomItem(ent.getItemStack());
+            ci.setDisplayName(ent.name());
+            ci.setLore(createLore(ent, p));
+            spawnerMenu[currPage].setItemWithAction(idx, ci.getItemStack(), e -> {
                 e.getWhoClicked().sendMessage("Clicked slot "+ finalIdx +", page "+ finalCurrPage +" for ent "+ent.toString()+"!");
                 if(!setSpawnerType(sp, ent)) {
                     e.getWhoClicked().closeInventory();
@@ -80,6 +88,15 @@ public class PlayerData {
         }
         this.spawnerMenu[0].openInventory(p());
         return true;
+    }
+
+    private List<String> createLore(SpawnableEntity se, Player p) {
+        IEconomy price = EconManager.getInstance().getPrice(se);
+        List<String> l = new ArrayList<>();
+        l.add("Cost: "+price.getPrice());
+        l.add("");
+        l.add(price.canBuy(p) ? "You can buy this" : "You can't buy this");
+        return l;
     }
 
     private boolean setSpawnerType(CreatureSpawner sp, SpawnableEntity ent) {

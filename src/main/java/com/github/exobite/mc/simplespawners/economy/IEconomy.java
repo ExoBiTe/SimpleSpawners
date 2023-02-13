@@ -6,4 +6,6 @@ public interface IEconomy {
 
     boolean canBuy(Player p);
 
+    String getPrice();
+
 }

@@ -23,4 +23,9 @@ public class ItemPrice implements IEconomy {
         return a >= amount;
     }
 
+    @Override
+    public String getPrice() {
+        return m.toString()+" x"+amount;
+    }
+
 }

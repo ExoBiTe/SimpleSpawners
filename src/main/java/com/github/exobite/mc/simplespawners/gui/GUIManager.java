@@ -1,6 +1,5 @@
 package com.github.exobite.mc.simplespawners.gui;
 
-import org.bukkit.entity.HumanEntity;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -47,10 +46,9 @@ public class GUIManager implements Listener {
 
     protected void removeGUI(GUI g) {
         guis.remove(g.getInv());
-        /*for(HumanEntity he:g.getInv().getViewers()) {
-            he.closeInventory();
-        }*/
     }
+
+    //TODO: Check for Clicks in own Inventory too
 
     @EventHandler
     private void onClick(InventoryClickEvent e) {
