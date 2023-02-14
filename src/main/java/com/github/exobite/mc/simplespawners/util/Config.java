@@ -141,7 +141,7 @@ public class Config {
         if(Boolean.TRUE.equals(cv.useVault.value) && !PluginMaster.getInstance().useVault()) {
             //Send Warning to Console, disable cv.useVault
             cv.useVault.value = false;
-            PluginMaster.sendConsoleMessage(Level.WARNING, "Couldn't find Vault. Defaulting to Item-Based Economy.");
+            PluginMaster.sendConsoleMessage(Level.WARNING, "Couldn't find setup Vault Economy. Defaulting to Item-Based Economy.");
         }
         return cv;
     }

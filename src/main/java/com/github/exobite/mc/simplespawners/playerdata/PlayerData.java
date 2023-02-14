@@ -13,7 +13,9 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.CreatureSpawner;
+import org.bukkit.entity.HumanEntity;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,79 +42,96 @@ public class PlayerData {
 
     public boolean openSpawnerMenu(CreatureSpawner sp, BlockLoc bl) {
         nextSpawnerInteractAllowed = System.currentTimeMillis() + SPAWNER_OPEN_MENU_DELAY_MS;
-        openMenuLoc = bl;
-        int pagesNeeded = Math.round(SpawnableEntity.getValidAmount() / (GUI_SIZE-9f) + 0.5f);
-        spawnerMenu = new GUI[pagesNeeded];
-        Player p = p();
-        int currPage = -1;
-        int idx = 0;
-        boolean allowBlacklistedEntities = p().hasPermission(IGNORE_BLACKLIST_PERM);
-        for(SpawnableEntity ent:SpawnableEntity.values()) {
-            if(!ent.isValid()) continue;
-            if(ent.isBlacklisted() && !allowBlacklistedEntities) continue;
-            if(idx==0) {
-                //Create new GUI
-                currPage++;
-                spawnerMenu[currPage] = GUIManager.getInstance().createGUI(Msg.SPAWNER_GUI_TITLE.getMessage(), GUI_SIZE);
-                spawnerMenu[currPage].setOnCloseAction(e -> removeGuis());
-                spawnerMenu[currPage].setItemWithAction(GUI_SIZE-4, CustomItem.getGUICloseButton().getItemStack(), e ->  {
-                    e.getWhoClicked().closeInventory();
-                    removeGuis();
-                });
-                spawnerMenu[currPage].setItem(GUI_SIZE-6, SpawnableEntity.valueOf(sp.getSpawnedType().toString()).getItemStack());
-                //Add "Next/Previous Page" Buttons
-                if(currPage>0) {
-                    int finalCurrPage = currPage;
-                    spawnerMenu[currPage-1].setItemWithAction(GUI_SIZE-1,
-                            CustomItem.getGUINextPageButton().getItemStack(), e ->
-                            openOtherPage(spawnerMenu[finalCurrPage-1], spawnerMenu[finalCurrPage]));
-                    spawnerMenu[currPage].setItemWithAction(GUI_SIZE-9,
-                            CustomItem.getGUIPrevPageButton().getItemStack(), e ->
-                            openOtherPage(spawnerMenu[finalCurrPage], spawnerMenu[finalCurrPage-1]));
-                }
-            }
-            int finalIdx = idx;
-            int finalCurrPage = currPage;
-            CustomItem ci = new CustomItem(ent.getItemStack());
-            ci.setDisplayName(ent.name());
-            ci.setLore(createLore(ent, p));
-            spawnerMenu[currPage].setItemWithAction(idx, ci.getItemStack(), e -> {
-                e.getWhoClicked().sendMessage("Clicked slot "+ finalIdx +", page "+ finalCurrPage +" for ent "+ent.toString()+"!");
-                if(!setSpawnerType(sp, ent)) {
-                    e.getWhoClicked().closeInventory();
-                    removeGuis();
-                }
-            });
-            idx++;
-            if(idx>=(GUI_SIZE-9)) idx=0;
-        }
+        createGuis(bl);
+        fillGuisWithItems(sp);
         this.spawnerMenu[0].openInventory(p());
         return true;
     }
 
-    private List<String> createLore(SpawnableEntity se, Player p) {
-        IEconomy price = EconManager.getInstance().getPrice(se);
-        List<String> l = new ArrayList<>();
-        l.add("Cost: "+price.getPrice());
-        l.add("");
-        l.add(price.canBuy(p) ? "You can buy this" : "You can't buy this");
-        return l;
+    private void createGuis(BlockLoc bl) {
+        if(spawnerMenu!=null) removeGuis();
+        openMenuLoc = bl;
+        int pagesNeeded = Math.round(SpawnableEntity.getValidAmount() / (GUI_SIZE-9f) + 0.5f);
+        spawnerMenu = new GUI[pagesNeeded];
+        for(int i=0;i<pagesNeeded;i++) {
+            GUI g = GUIManager.getInstance().createGUI(Msg.SPAWNER_GUI_TITLE.getMessage(), GUI_SIZE);
+            g.setOnCloseAction(e -> removeGuis());
+            g.setItemWithAction(GUI_SIZE-4, CustomItem.getGUICloseButton().getItemStack(), e ->  {
+                e.getWhoClicked().closeInventory();
+                removeGuis();
+            });
+            spawnerMenu[i] = g;
+            //Set next/prev page Buttons
+            if(i>0) {
+                int finalCurrPage = i;
+                spawnerMenu[i-1].setItemWithAction(GUI_SIZE-1, CustomItem.getGUINextPageButton().getItemStack(),
+                        e -> openOtherPage(spawnerMenu[finalCurrPage-1], spawnerMenu[finalCurrPage]));
+                spawnerMenu[i].setItemWithAction(GUI_SIZE-9,
+                        CustomItem.getGUIPrevPageButton().getItemStack(),
+                        e -> openOtherPage(spawnerMenu[finalCurrPage], spawnerMenu[finalCurrPage-1]));
+            }
+        }
     }
 
-    private boolean setSpawnerType(CreatureSpawner sp, SpawnableEntity ent) {
-        //Check if Spawner is still there
-        if(new Location(p().getLocation().getWorld(), openMenuLoc.x(), openMenuLoc.y(), openMenuLoc.z()).getBlock().getType()!= Material.SPAWNER)
-            return false;
-        sp.setSpawnedType(ent.getType());
-        sp.update();
-        //Refresh GUIs
-        for(GUI g : spawnerMenu) {
-            g.setItem(GUI_SIZE-6, ent.getItemStack());
+    private void fillGuisWithItems(CreatureSpawner sp) {
+        final Player p = p();
+        int currPage = -1;
+        int idx = 0;
+        final boolean allowBlacklistedEntities = p().hasPermission(IGNORE_BLACKLIST_PERM);
+        for(SpawnableEntity en:SpawnableEntity.values()) {
+            if(!en.isValid() || (en.isBlacklisted() && !allowBlacklistedEntities)) continue;
+            if(idx==0) {
+                currPage++;
+                spawnerMenu[currPage].setItem(GUI_SIZE-6,
+                        SpawnableEntity.valueOf(sp.getSpawnedType().toString()).getItemStack());
+            }
+            spawnerMenu[currPage].setItemWithAction(idx,
+                    createGuiItem(en, p),
+                    e -> buyAttempt(e.getWhoClicked(), en));
+            idx++;
+            if(idx>=(GUI_SIZE-9)) idx = 0;
         }
-        return true;
+    }
+
+    private void buyAttempt(HumanEntity clicker, SpawnableEntity ent) {
+        if(!(clicker instanceof Player p)) return;
+        Location l = openMenuLoc.toLocation(clicker.getWorld());
+        if(l.getBlock().getType()!=Material.SPAWNER) {
+            p.closeInventory();
+            removeGuis();
+            return;
+        }
+        IEconomy price = EconManager.getInstance().getPrice(ent);
+        boolean canAfford = price.canBuy(p);
+        if(!canAfford) {
+            p.sendMessage(Msg.ECO_TRANSACTION_ERR_INSUFFICIENT_FUNDS.getMessage());
+            return;
+        }
+        if(!price.buy(p)) {
+            p.sendMessage(Msg.ECO_TRANSACTION_UNKNOWN_ERR.getMessage());
+        }else{
+            CreatureSpawner sp = (CreatureSpawner) l.getBlock().getState();
+            sp.setSpawnedType(ent.getType());
+            sp.update();
+            fillGuisWithItems(sp);
+            p.sendMessage(Msg.ECO_TRANSACTION_SUCCESS.getMessage());
+        }
+    }
+
+    private ItemStack createGuiItem(SpawnableEntity ent, Player p) {
+        CustomItem ci = new CustomItem(ent.getItemStack());
+        ci.setDisplayName(Msg.SPAWNER_GUI_ITEM_NAME.getMessage(ent.name()));
+        IEconomy price = EconManager.getInstance().getPrice(ent);
+        List<String> l = new ArrayList<>();
+        l.add(Msg.SPAWNER_GUI_COST.getMessage(price.getPrice()));
+        l.add("");
+        l.add(price.canBuy(p) ? Msg.SPAWNER_GUI_CAN_BUY.getMessage() : Msg.SPAWNER_GUI_CANNOT_BUY.getMessage());
+        ci.setLore(l);
+        return ci.getItemStack();
     }
 
     private void removeGuis() {
+        if(spawnerMenu==null) return;
         for(GUI g : spawnerMenu) {
             g.removeGUI();
         }

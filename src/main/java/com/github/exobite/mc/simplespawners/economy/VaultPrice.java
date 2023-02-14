@@ -19,6 +19,12 @@ public class VaultPrice implements IEconomy {
     }
 
     @Override
+    public boolean buy(Player p) {
+        if(!canBuy(p)) return false;
+        return VaultHelper.getInstance().withdrawMoney(p, cost);
+    }
+
+    @Override
     public String getPrice() {
         if(!PluginMaster.getInstance().useVault()) return "ERROR";
         return VaultHelper.getInstance().formatCurrency(cost);

@@ -26,6 +26,22 @@ public enum Msg {
             true,
             ""),
 
+    SPAWNER_GUI_ITEM_NAME(ChatColor.GOLD+"Set spawner type to "+ChatColor.AQUA+"%[0]",
+            true,
+            ""),
+
+    SPAWNER_GUI_COST(ChatColor.GOLD+"Price: "+ChatColor.LIGHT_PURPLE+"%[0]",
+            true,
+            ""),
+
+    SPAWNER_GUI_CAN_BUY(ChatColor.GREEN+"Click to Buy!",
+            true,
+            ""),
+
+    SPAWNER_GUI_CANNOT_BUY(ChatColor.RED+"You can't afford that!",
+            true,
+            ""),
+
     ECO_TRANSACTION_ERR_INSUFFICIENT_FUNDS(ChatColor.RED+"Transaction failed, you have insufficient funds",
             true,
             ""),

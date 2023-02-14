@@ -8,4 +8,6 @@ public interface IEconomy {
 
     String getPrice();
 
+    boolean buy(Player p);
+
 }
