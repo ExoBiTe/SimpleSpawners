@@ -31,8 +31,8 @@ public class GUI {
 
     protected void clicked(InventoryClickEvent e) {
         int slot = e.getSlot();
-        if(!actions.containsKey(slot)) return;
         e.setCancelled(true);
+        if(!actions.containsKey(slot)) return;
         actions.get(slot).clicked(e);
     }
 

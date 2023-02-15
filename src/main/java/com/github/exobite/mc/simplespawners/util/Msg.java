@@ -16,56 +16,63 @@ public enum Msg {
 
     SPAWN_ITEM_LORE(ChatColor.GRAY+"Spawns: "+ChatColor.GOLD+"%[0]",
             true,
-            ""),
+            "The Lore of Mined Spawner Items"),
 
     SPAWNER_ALREADY_IN_EDIT(ChatColor.RED+"You can't edit this spawner, as it is already being edited by someone else!",
             true,
-            ""),
+            "Sent to a Player when they try to edit a Spawner, that is already being edited by someone else"),
 
     SPAWNER_GUI_TITLE(ChatColor.AQUA+"Monster Spawner",
             true,
-            ""),
+            "The Title of the Monster Spawner Change GUI"),
 
     SPAWNER_GUI_ITEM_NAME(ChatColor.GOLD+"Set spawner type to "+ChatColor.AQUA+"%[0]",
             true,
-            ""),
+            "The Displayname of all 'Buttons'(Items) in the Spawner GUI"),
 
     SPAWNER_GUI_COST(ChatColor.GOLD+"Price: "+ChatColor.LIGHT_PURPLE+"%[0]",
             true,
-            ""),
+            "The Price-Text for all Buttons in the Spawner GUI"),
+
+    SPAWNER_GUI_COST_ISFREE(ChatColor.GOLD+"Price: "+ChatColor.AQUA+"FREE",
+            true,
+            "The Price-Text when an Option is Free for all Buttons in the Spawner GUI"),
 
     SPAWNER_GUI_CAN_BUY(ChatColor.GREEN+"Click to Buy!",
             true,
-            ""),
+            "Is displayed when the Players has enough Funds in order to buy the selected Option"),
 
     SPAWNER_GUI_CANNOT_BUY(ChatColor.RED+"You can't afford that!",
             true,
-            ""),
+            "Is displayed when the Players has not enough Funds in order to buy the selected Option"),
+
+    SPAWNER_GUI_CURRENT_TYPE_NAME(ChatColor.GOLD+"Current Type: "+ChatColor.AQUA+"%[0]"+ChatColor.GOLD+"!",
+            true,
+            "The Displayname of the GUI-Item showing the current Spawner Type"),
 
     ECO_TRANSACTION_ERR_INSUFFICIENT_FUNDS(ChatColor.RED+"Transaction failed, you have insufficient funds",
             true,
-            ""),
+            "Sent to the Player when the Purchase of an Option fails because the Players hasn't enough funds"),
 
     ECO_TRANSACTION_UNKNOWN_ERR(ChatColor.RED+"Transaction failed, an unknown error occurred",
             true,
-            ""),
+            "Sent to the Player when an unknown Error during a Purchase occurs"),
 
-    ECO_TRANSACTION_SUCCESS("",
+    ECO_TRANSACTION_SUCCESS(ChatColor.GREEN+"Changed the Spawner Type successfully!",
             true,
-            ""),
+            "Sent to the Player when an option has been purchased successfully"),
 
     CMD_ERR_NO_PERMISSION(ChatColor.RED+"You don't have the Permission to do that.",
             true,
-            ""),
+            "Sent to the Player when they use a Feature locked behind a Permission which they don't have"),
 
-    CMD_SS_RELOAD_STARTED("",
+    CMD_SS_RELOAD_STARTED(ChatColor.GRAY+"Reloading Plugin Configuration...",
             true,
-            ""),
+            "Sent to the Player upon using the '/ss reload'-Command"),
 
     ;
 
     private static final String FILE_NAME = "lang.yml";
-    private static PluginMaster main;
     private static File configFile;
 
     public static void registerMessages() {
@@ -157,7 +164,7 @@ public enum Msg {
     }
 
     private void setNewMessage(String msg, boolean initial) {
-        String replaced = msg.replaceAll("%\\[[0-9]]", "%[#]");
+        String replaced = msg.replaceAll("%\\[\\d]", "%[#]");
         int newArgs = Utils.countMatches(replaced, "%[#]");
         if(initial) {
             this.argAmount = newArgs;

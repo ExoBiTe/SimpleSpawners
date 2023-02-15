@@ -22,7 +22,7 @@ public class CustomItem {
         return new CustomItem(Material.REDSTONE).setDisplayName(ChatColor.GOLD + "Previous Page");
     }
 
-    private ItemStack is;
+    private final ItemStack is;
 
     public CustomItem(ItemStack is) {
         this.is = is;

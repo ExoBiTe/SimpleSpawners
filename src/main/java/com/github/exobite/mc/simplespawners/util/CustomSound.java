@@ -21,10 +21,10 @@ public enum CustomSound {
             "Played when a mined spawner is dropped into the Miners Inventory"),
 
     SPAWNER_TYPE_CHANGED(Sound.ENTITY_EXPERIENCE_ORB_PICKUP, 1, 1,
-            ""),
+            "Played when the Spawner Type has been changed successfully"),
 
     TRANSACTION_ERROR(Sound.BLOCK_ANVIL_LAND, 1, 0.1f,
-            ""),
+            "Played when a transaction failed"),
 
 
     ;

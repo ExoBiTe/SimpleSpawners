@@ -9,25 +9,32 @@ public class VaultPrice implements IEconomy {
     private final float cost;
 
     public VaultPrice(float cost) {
-        this.cost = cost;
+        this.cost = Math.max(cost, 0f);
     }
 
     @Override
     public boolean canBuy(Player p) {
-        if(!PluginMaster.getInstance().useVault()) return false;
+        if(!PluginMaster.getInstance().vaultRegistered()) return false;
+        if(isFree()) return true;
         return VaultHelper.getInstance().playerHasMoney(p, cost);
     }
 
     @Override
     public boolean buy(Player p) {
         if(!canBuy(p)) return false;
+        if(isFree()) return true;
         return VaultHelper.getInstance().withdrawMoney(p, cost);
     }
 
     @Override
     public String getPrice() {
-        if(!PluginMaster.getInstance().useVault()) return "ERROR";
+        if(!PluginMaster.getInstance().vaultRegistered()) return "ERROR";
         return VaultHelper.getInstance().formatCurrency(cost);
+    }
+
+    @Override
+    public boolean isFree() {
+        return cost <= 0;
     }
 
 }

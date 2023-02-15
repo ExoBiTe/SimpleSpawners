@@ -10,6 +10,7 @@ import com.github.exobite.mc.simplespawners.listener.PlayerInteraction;
 import com.github.exobite.mc.simplespawners.vault.VaultHelper;
 import com.github.exobite.mc.simplespawners.web.UpdateChecker;
 import org.bstats.bukkit.Metrics;
+import org.bstats.charts.SimplePie;
 import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -70,12 +71,14 @@ public class PluginMaster extends JavaPlugin {
     private void setupExternals() {
         if(getServer().getPluginManager().getPlugin("Vault") != null) {
             useVault = VaultHelper.register(this);
+            if(!useVault) sendConsoleMessage(Level.SEVERE, "Found Vault but no Economy Plugin!");
         }
     }
 
     private void enableMetrics() {
         if(!Config.getInstance().allowMetrics()) return;
-        new Metrics(this, BSTATS_ID);
+        Metrics bs = new Metrics(this, BSTATS_ID);
+        bs.addCustomChart(new SimplePie("uses_vault", () -> String.valueOf(useVault)));
     }
 
     private void checkForUpdate() {
@@ -85,7 +88,7 @@ public class PluginMaster extends JavaPlugin {
             @Override
             public void run() {
                 if(UpdateChecker.getInstance()==null) {
-                    UpdateChecker.createUpdateChecker(inst, false);
+                    UpdateChecker.createUpdateChecker(inst);
                 }
                 UpdateChecker.getInstance().start(false);
             }
@@ -96,7 +99,7 @@ public class PluginMaster extends JavaPlugin {
         return interactInst;
     }
 
-    public boolean useVault() {
+    public boolean vaultRegistered() {
         return useVault;
     }
 

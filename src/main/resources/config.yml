@@ -1,18 +1,26 @@
 #Configuration file for SimpleSpawners by ExoBiTe @ spigoturl
 
-#If set to true, the Plugin tries to use Vault.
-#If Vault isn't installed on the Server, it defaults to its own Economy System.
-UseVault: false
-
 #If this is true, mined Spawners drop directly into the Miners Inventory.
 #Otherwise, they drop as Item where the Spawner was mined.
 DropIntoInventory: false
 
+#Define Item Prices for Entities, that the Player has to Pay in Order to Change the Spawner to the specified Entity.
+#If an Entity has no Price specified, the DEFAULT Entry will be applied
+#Format is <ENTITY>: <MATERIAL>, <AMOUNT>
+#You may look up all Materials here: #https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+#Entities are listed here, but not all are supported by the Plugin: #https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
+#Players with the 'simplespawners.interact.nofees:'-permission won't have to pay anything for every Entity
 ItemPrices:
   DEFAULT: GOLD_INGOT, 20
+  GIANT: DIAMOND_BLOCK, 64
 
+#The same as ItemPrices, just using the Economy Plugin
+#Needs Vault and an Economy Plugin in order to work!
+#The Format is <ENTITY>: <PRICE>
+#If you have duplicate Entities in EconomyPrices and ItemPrices, the Values from EconomyPrices will be used
+#Players with the 'simplespawners.interact.nofees:'-permission won't have to pay anything for every Entity
 EconomyPrices:
-  DEFAULT: 20.0
+  ZOMBIE: 20.0
 
 #Blacklisted Entities
 #Players with the 'simplespawners.ignoreblacklist'-permission ignore this list

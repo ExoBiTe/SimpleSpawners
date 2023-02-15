@@ -10,8 +10,6 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
-import java.nio.ByteBuffer;
-import java.util.UUID;
 import java.util.logging.Level;
 
 public class Utils {
@@ -125,6 +123,14 @@ public class Utils {
         //Example: "abc.abc.abc.def", "def"
         // length = 15, newLength = 12, diff 3 division by length of match = 1
         return (toSearch.length() - toSearch.replace(match, "").length()) / match.length();
+    }
+
+    public static SpawnableEntity getEntityFromString(String str) {
+        try {
+            return SpawnableEntity.valueOf(str);
+        }catch(IllegalArgumentException e) {
+            return null;
+        }
     }
 
 }

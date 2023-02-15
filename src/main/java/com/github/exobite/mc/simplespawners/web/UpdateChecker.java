@@ -23,7 +23,7 @@ public class UpdateChecker {
         return instance;
     }
 
-    public static void createUpdateChecker(JavaPlugin main, boolean useBukkitAsyncScheduler) {
+    public static void createUpdateChecker(JavaPlugin main) {
         if(instance==null){
             instance = new UpdateChecker(main);
         }

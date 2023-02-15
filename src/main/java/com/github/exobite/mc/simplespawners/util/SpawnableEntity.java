@@ -311,10 +311,6 @@ public enum SpawnableEntity {
         return isValid;
     }
 
-    public String getTexture() {
-        return texture;
-    }
-
     public EntityType getType() {
         return type;
     }

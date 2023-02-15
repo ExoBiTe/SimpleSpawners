@@ -18,19 +18,26 @@ permissions:
     children:
       simplespawners.cmd.*: true
       simplespawners.interact.changespawner: true
+      simplespawners.interact.nofees: true
       simplespawners.mine.*: true
 
   simplespawners.cmd.*:
     default: op
     children:
+      simplespawners.cmd.give: true
       simplespawners.cmd.reload: true
 
   simplespawners.cmd.reload:
     description: Allows usage of /SimpleSpawners reload
 
+  simplespawners.cmd.give:
+    description: Allows usage of /SimpleSpawners give
+
   simplespawners.interact.changespawner:
     description: Allows to change the Spawned Entity for MobSpawners
-    default: op
+
+  simplespawners.interact.nofees:
+    description: Allows to change the Spawned Entity for MobSpawners
 
   simplespawners.mine.*:
     default: op

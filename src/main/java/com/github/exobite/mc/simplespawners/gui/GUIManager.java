@@ -48,13 +48,15 @@ public class GUIManager implements Listener {
         guis.remove(g.getInv());
     }
 
-    //TODO: Check for Clicks in own Inventory too
-
     @EventHandler
     private void onClick(InventoryClickEvent e) {
-        Inventory inv = e.getClickedInventory();
-        if(!guis.containsKey(inv)) return;
-        guis.get(inv).clicked(e);
+        Inventory clickedInv = e.getClickedInventory();
+        Inventory topInv = e.getWhoClicked().getOpenInventory().getTopInventory();
+        if(guis.containsKey(clickedInv)) {
+            guis.get(clickedInv).clicked(e);
+        } else if(clickedInv != topInv && guis.containsKey(topInv)) {
+            e.setCancelled(true);
+        }
     }
 
     @EventHandler

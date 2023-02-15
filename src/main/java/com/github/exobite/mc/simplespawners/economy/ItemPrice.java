@@ -5,8 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.Map;
-
 public class ItemPrice implements IEconomy {
 
     private final Material m;
@@ -19,6 +17,7 @@ public class ItemPrice implements IEconomy {
 
     @Override
     public boolean canBuy(Player p) {
+        if(isFree()) return true;
         int a = 0;
         for(ItemStack is:p.getInventory().getContents()) {
             if(is==null) continue;
@@ -30,6 +29,7 @@ public class ItemPrice implements IEconomy {
     @Override
     public boolean buy(Player p) {
         if(!canBuy(p)) return false;
+        if(isFree()) return true;
         //Remove Items from Inventory
         int amountLeft = amount;
         Inventory inv = p.getInventory();
@@ -50,6 +50,11 @@ public class ItemPrice implements IEconomy {
     @Override
     public String getPrice() {
         return m.toString()+" x"+amount;
+    }
+
+    @Override
+    public boolean isFree() {
+        return amount==0 || m==null;
     }
 
 }

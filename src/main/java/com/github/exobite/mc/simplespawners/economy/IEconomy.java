@@ -10,4 +10,6 @@ public interface IEconomy {
 
     boolean buy(Player p);
 
+    boolean isFree();
+
 }

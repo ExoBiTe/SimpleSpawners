@@ -12,9 +12,9 @@ import java.util.Locale;
 
 public class DebugListener implements Listener {
 
-    private abstract class SyncTask {
+    private interface SyncTask {
 
-        abstract void run();
+        void run();
 
     }
 
@@ -68,12 +68,7 @@ public class DebugListener implements Listener {
             sendMessage(p, "No Skull '"+msg[1]+"' found!");
             return;
         }
-        runSync(new SyncTask() {
-            @Override
-            void run() {
-                p.getInventory().addItem(sd.getItemStack());
-            }
-        });
+        runSync(() -> p.getInventory().addItem(sd.getItemStack()));
     }
 
 

@@ -29,7 +29,7 @@ public class VaultHelper {
 
     public boolean playerHasMoney(Player p, float amount) {
         if(eco==null) return false;
-        return amount >= eco.getBalance(p);
+        return amount <= eco.getBalance(p);
     }
 
     public boolean withdrawMoney(Player p, float amount) {
