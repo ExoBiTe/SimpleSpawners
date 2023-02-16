@@ -24,13 +24,11 @@ public class Utils {
     private Utils() {}
 
     public static boolean updateFileVersionDependent(String filename) {
+        //TODO: Maybe Refactor these two Methods into one with a Parameter, as they're nearly identical
         if(VersionHelper.isEqualOrLarger(VersionHelper.getBukkitVersion(), new Version(1, 18, 0))) {
             return updateConfigFileWithComments(filename);
         }else{
-            boolean changed = fillDefaultFile(filename);
-            if(changed) PluginMaster.sendConsoleMessage(Level.INFO, "The Comments from the File "+filename+" may have been deleted.\n" +
-                    "Consider using a newer Bukkit Version (1.18+) to prevent this issue.");
-            return changed;
+            return fillDefaultFile(filename);
         }
     }
 

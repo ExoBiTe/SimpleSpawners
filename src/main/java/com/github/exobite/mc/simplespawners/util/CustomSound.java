@@ -32,9 +32,11 @@ public enum CustomSound {
     private static final String FILE_NAME = "sounds.yml";
     private static PluginMaster main;
     private static File soundFile;
+    private static boolean writeComments;
 
     public static void registerSoundLibrary(PluginMaster main) {
         if(CustomSound.main!=null) return; //If main isn't null, SoundLibrary has already been loaded
+        writeComments = PluginMaster.getInstance().writeCommentsToFile();
         CustomSound.main = main;
         soundFile = new File(main.getDataFolder() + File.separator + FILE_NAME);
         loadSoundData();
@@ -62,7 +64,7 @@ public enum CustomSound {
                 conf.set(sound + ".sound" , sound.getSound().toString());
                 conf.set(sound + ".v1" , sound.getV1());
                 conf.set(sound + ".v2" , sound.getV2());
-                conf.setComments(sound.toString(), stringToList(sound.comment));
+                if(writeComments) conf.setComments(sound.toString(), stringToList(sound.comment));
                 if(!changedConfig) changedConfig = true;
             }else{
                 //Sound exists in Cfg, read Data from it
@@ -86,7 +88,7 @@ public enum CustomSound {
             conf.set(sound + ".sound" , sound.getSound().toString());
             conf.set(sound + ".v1" , sound.getV1());
             conf.set(sound + ".v2" , sound.getV2());
-            conf.setComments(sound.toString(), stringToList(sound.comment));
+            if(writeComments) conf.setComments(sound.toString(), stringToList(sound.comment));
         }
         try {
             conf.save(soundFile);

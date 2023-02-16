@@ -30,6 +30,7 @@ public class PluginMaster extends JavaPlugin {
 
     private boolean useVault;
     private boolean usePapi;
+    private boolean writeCommentsToFile;
 
     private PlayerInteraction interactInst;
 
@@ -44,6 +45,7 @@ public class PluginMaster extends JavaPlugin {
     public void onEnable() {
         long t1 = System.currentTimeMillis();
         instance = this;
+        checkForVersion();
         Utils.registerUtils(this);
         Msg.registerMessages();
         CustomSound.registerSoundLibrary(this);
@@ -95,6 +97,16 @@ public class PluginMaster extends JavaPlugin {
         }.runTaskTimerAsynchronously(this, 20L, UPDATE_CHECK_INTERVAL);
     }
 
+    private void checkForVersion() {
+        writeCommentsToFile = VersionHelper.isEqualOrLarger(VersionHelper.getBukkitVersion(), new Version(1, 18, 0));
+        if(writeCommentsToFile) sendConsoleMessage(Level.WARNING,
+                """
+                Version <1.18 detected:
+                This plugin may write to it's config Files, resulting in removal of the Comments in the YAML Files.
+                Consider upgrading your Server Version to MC1.18 or newer, in order for this not to happen anymore.
+                """);
+    }
+
     public PlayerInteraction getInteractInst() {
         return interactInst;
     }
@@ -105,6 +117,10 @@ public class PluginMaster extends JavaPlugin {
 
     public boolean usePapi() {
         return usePapi;
+    }
+
+    public boolean writeCommentsToFile() {
+        return writeCommentsToFile;
     }
 
 }

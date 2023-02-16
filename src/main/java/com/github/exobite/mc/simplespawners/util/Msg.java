@@ -74,9 +74,11 @@ public enum Msg {
 
     private static final String FILE_NAME = "lang.yml";
     private static File configFile;
+    private static boolean writeComments;
 
     public static void registerMessages() {
         if(configFile!=null) return; //If configFile is initialized, the class has already been loaded.
+        writeComments = PluginMaster.getInstance().writeCommentsToFile();
         configFile = new File(PluginMaster.getInstance().getDataFolder() + File.separator + FILE_NAME);
         loadMessages();
     }
@@ -102,7 +104,7 @@ public enum Msg {
                 if(!msg.showInFile) continue;   //Skip hidden Messages
                 //Message doesn't exist in Cfg, add it
                 conf.set(msg.toString(), msg.getRawMessage());
-                conf.setComments(msg.toString(), stringToList(msg.comment));
+                if(writeComments) conf.setComments(msg.toString(), stringToList(msg.comment));
                 if(!changedConfig) changedConfig = true;
             }else{
                 //Msg exists in Cfg, read Data from it
@@ -124,7 +126,7 @@ public enum Msg {
         YamlConfiguration conf = YamlConfiguration.loadConfiguration(configFile);
         for(Msg msg:Msg.values()) {
             conf.set(msg.toString() , msg.getRawMessage());
-            conf.setComments(msg.toString(), stringToList(msg.comment));
+            if(writeComments) conf.setComments(msg.toString(), stringToList(msg.comment));
         }
         try {
             conf.save(configFile);

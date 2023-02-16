@@ -45,14 +45,14 @@ public class SimpleSpawnersCmd implements CommandExecutor, TabCompleter {
     }
 
     private static final CommandInfo GIVE_CMD = new CommandInfo(
-            "/SimpleSpawners "+ChatColor.AQUA+" give"+ChatColor.GRAY+
+            "/SimpleSpawners"+ChatColor.AQUA+" give "+ChatColor.GRAY+
                     "["+ChatColor.DARK_AQUA+"player"+ChatColor.GRAY+"]",
             "Gives the specified Player a Customizable Spawner",
             "simplespawners.cmd.give"
     );
 
     private static final CommandInfo RELOAD_CMD = new CommandInfo(
-            "/SimpleSpawners "+ChatColor.AQUA+" reload",
+            "/SimpleSpawners"+ChatColor.AQUA+" reload",
             "Reloads the config.yml File",
             "simplespawners.cmd.reload"
     );
@@ -135,10 +135,16 @@ public class SimpleSpawnersCmd implements CommandExecutor, TabCompleter {
     public List<String> onTabComplete(CommandSender s, Command cmd, String str, String[] args) {
         ArrayList<String> d = new ArrayList<>();
         int size = args.length;
-        if(size<2) {
-            if(s.hasPermission(GIVE_CMD.permission())) {
-                for(Player p:Bukkit.getOnlinePlayers()) {
-                    d.add(p.getName());
+        switch (size) {
+            case 1 -> {
+                if(s.hasPermission(GIVE_CMD.permission())) d.add("give");
+                if(s.hasPermission(RELOAD_CMD.permission())) d.add("reload");
+            }
+            case 2 -> {
+                if(args[0].equalsIgnoreCase("give") && s.hasPermission(GIVE_CMD.permission())) {
+                    for(Player p:Bukkit.getOnlinePlayers()) {
+                        d.add(p.getName());
+                    }
                 }
             }
         }
