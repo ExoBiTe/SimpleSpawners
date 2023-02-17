@@ -29,10 +29,11 @@ public class EconManager {
     private EconManager() {
         setupItemPrices();
         ConfigurationSection cfgVault = Config.getInstance().getEconPrices();
+        //TODO: Maybe Refactor Cfg to include all Prices in one List, instead of two separate Lists
         if(PluginMaster.getInstance().vaultRegistered()) {
             setupVaultPrices(cfgVault);
         }else if(!cfgVault.getKeys(false).isEmpty()){
-            PluginMaster.sendConsoleMessage(Level.WARNING, "Didn't find an Vault and an Economy Plugin, disabling the Economy Prices.");
+            PluginMaster.sendConsoleMessage(Level.WARNING, "Didn't find Vault and an Economy Plugin, disabling the Economy Prices.");
         }
     }
 

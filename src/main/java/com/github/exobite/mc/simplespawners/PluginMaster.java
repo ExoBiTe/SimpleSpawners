@@ -75,6 +75,7 @@ public class PluginMaster extends JavaPlugin {
             useVault = VaultHelper.register(this);
             if(!useVault) sendConsoleMessage(Level.SEVERE, "Found Vault but no Economy Plugin!");
         }
+        usePapi = getServer().getPluginManager().getPlugin("PlaceholderAPI") != null;
     }
 
     private void enableMetrics() {
@@ -99,11 +100,12 @@ public class PluginMaster extends JavaPlugin {
 
     private void checkForVersion() {
         writeCommentsToFile = VersionHelper.isEqualOrLarger(VersionHelper.getBukkitVersion(), new Version(1, 18, 0));
-        if(writeCommentsToFile) sendConsoleMessage(Level.WARNING,
+        if(!writeCommentsToFile) sendConsoleMessage(Level.WARNING,
                 """
-                Version <1.18 detected:
-                This plugin may write to it's config Files, resulting in removal of the Comments in the YAML Files.
-                Consider upgrading your Server Version to MC1.18 or newer, in order for this not to happen anymore.
+                Minecraft Version < 1.18 detected:
+                This plugin may write to it's config Files, resulting in removal of the Comments
+                in the YAML Files. Consider upgrading your Server Version to MC1.18 or newer,
+                in order for this not to happen anymore.
                 """);
     }
 

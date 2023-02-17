@@ -47,11 +47,12 @@ public class PlayerInteraction implements Listener {
         if(e.getClickedBlock()==null || e.getAction()!=Action.RIGHT_CLICK_BLOCK || !e.getPlayer().hasPermission(SPAWNER_MENU_PERM)) return;
         Block b = e.getClickedBlock();
         if(b.getType()!= Material.SPAWNER) return;
+        Player p = e.getPlayer();
         BlockLoc bl = new BlockLoc(b.getLocation().getBlockX(), b.getLocation().getBlockY(), b.getLocation().getBlockZ());
-        PlayerData pd = PlayerDataManager.getInstance().getPlayerData(e.getPlayer().getUniqueId());
+        PlayerData pd = PlayerDataManager.getInstance().getPlayerData(p.getUniqueId());
         if(!pd.canOpenSpawnerMenu()) return;
         if(inEdit.containsKey(bl)){
-            e.getPlayer().sendMessage(Msg.SPAWNER_ALREADY_IN_EDIT.getMessage());
+            p.sendMessage(Msg.SPAWNER_ALREADY_IN_EDIT.getMessage(p));
             return;
         }
         if(!pd.openSpawnerMenu((CreatureSpawner) e.getClickedBlock().getState(), bl)) {
@@ -64,7 +65,8 @@ public class PlayerInteraction implements Listener {
     @EventHandler
     private void onBlockBreak(BlockBreakEvent e) {
         if(e.getBlock().getType()!=Material.SPAWNER) return;
-        ItemStack mh = e.getPlayer().getInventory().getItemInMainHand();
+        Player p = e.getPlayer();
+        ItemStack mh = p.getInventory().getItemInMainHand();
         BlockLoc bl = new BlockLoc(e.getBlock().getX(), e.getBlock().getY(), e.getBlock().getZ());
         if(!mh.getType().toString().toLowerCase(Locale.ROOT).contains("pickaxe")
                 || mh.getEnchantmentLevel(Enchantment.SILK_TOUCH) <= 0) {
@@ -72,7 +74,7 @@ public class PlayerInteraction implements Listener {
             return;
         }
         CreatureSpawner sp = (CreatureSpawner)e.getBlock().getState();
-        if(!isMineable(e.getPlayer(), sp)) {
+        if(!isMineable(p, sp)) {
             forceClose(bl);
             return;
         }
@@ -81,17 +83,17 @@ public class PlayerInteraction implements Listener {
         ItemMeta im = spawner.getItemMeta();
         assert im != null;
         im.getPersistentDataContainer().set(itemKey, PersistentDataType.STRING, et.toString());
-        im.setLore(List.of(Msg.SPAWN_ITEM_LORE.getMessage(et.toString())));
+        im.setLore(List.of(Msg.SPAWN_ITEM_LORE.getMessage(p, et.toString())));
         spawner.setItemMeta(im);
         if(!Config.getInstance().dropIntoInventory()) {
             dropItem(spawner, e.getBlock().getLocation());
         }else{
-            Map<Integer, ItemStack> items = e.getPlayer().getInventory().addItem(spawner);
+            Map<Integer, ItemStack> items = p.getInventory().addItem(spawner);
             if(!items.isEmpty()) {
                 //Player Inventory is full, drop Item
                 dropItem(spawner, e.getBlock().getLocation());
             }else{
-                CustomSound.SPAWNER_DROPPED_INTO_INV.playSound(e.getPlayer());
+                CustomSound.SPAWNER_DROPPED_INTO_INV.playSound(p);
             }
         }
     }

@@ -87,11 +87,13 @@ public class SimpleSpawnersCmd implements CommandExecutor, TabCompleter {
     }
 
     private void reloadCommand(CommandSender s, String[] args) {
+        Player p = null;
+        if(s instanceof Player) p = (Player) s;
         if(!s.hasPermission(RELOAD_CMD.permission())) {
-            s.sendMessage(Msg.CMD_ERR_NO_PERMISSION.getMessage());
+            s.sendMessage(Msg.CMD_ERR_NO_PERMISSION.getMessage(p));
             return;
         }
-        s.sendMessage(Msg.CMD_SS_RELOAD_STARTED.getMessage());
+        s.sendMessage(Msg.CMD_SS_RELOAD_STARTED.getMessage(p));
         new BukkitRunnable() {
             @Override
             public void run() {
@@ -107,17 +109,19 @@ public class SimpleSpawnersCmd implements CommandExecutor, TabCompleter {
     }
 
     private void giveCommand(CommandSender s, String[] args) {
+        Player p = null;
+        if(s instanceof Player) p = (Player) s;
         if(!s.hasPermission(GIVE_CMD.permission())) {
-            s.sendMessage(Msg.CMD_ERR_NO_PERMISSION.getMessage());
+            s.sendMessage(Msg.CMD_ERR_NO_PERMISSION.getMessage(p));
             return;
         }
         if(args.length==1) {
             s.sendMessage(GIVE_CMD.usage());
             return;
         }
-        Player p = Bukkit.getPlayer(args[1]);
-        if(p==null) {
-            s.sendMessage(ChatColor.RED+"Can't find Player '"+ChatColor.GOLD+args[1]+ChatColor.RED+"'!");
+        Player target = Bukkit.getPlayer(args[1]);
+        if(target==null) {
+            s.sendMessage(Msg.CMD_ERR_UNKNOWN_PLAYER.getMessage(p));
             return;
         }
         ItemStack spawner = new ItemStack(Material.SPAWNER, 1);
@@ -126,9 +130,9 @@ public class SimpleSpawnersCmd implements CommandExecutor, TabCompleter {
         im.getPersistentDataContainer().set(
                 new NamespacedKey(PluginMaster.getInstance(), "spawnerType"),
                 PersistentDataType.STRING, EntityType.PIG.toString());
-        im.setLore(List.of(Msg.SPAWN_ITEM_LORE.getMessage(EntityType.PIG.toString())));
+        im.setLore(List.of(Msg.SPAWN_ITEM_LORE.getMessage(p, EntityType.PIG.toString())));
         spawner.setItemMeta(im);
-        p.getInventory().addItem(spawner);
+        target.getInventory().addItem(spawner);
     }
 
     @Override

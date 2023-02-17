@@ -52,8 +52,9 @@ public class PlayerData {
         openMenuLoc = bl;
         int pagesNeeded = Math.round(SpawnableEntity.getValidAmount() / (GUI_SIZE-9f) + 0.5f);
         spawnerMenu = new GUI[pagesNeeded];
+        Player p = p();
         for(int i=0;i<pagesNeeded;i++) {
-            GUI g = GUIManager.getInstance().createGUI(Msg.SPAWNER_GUI_TITLE.getMessage(), GUI_SIZE);
+            GUI g = GUIManager.getInstance().createGUI(Msg.SPAWNER_GUI_TITLE.getMessage(p), GUI_SIZE);
             g.setOnCloseAction(e -> removeGuis());
             g.setItemWithAction(GUI_SIZE-4, CustomItem.getGUICloseButton().getItemStack(), e ->  {
                 e.getWhoClicked().closeInventory();
@@ -86,10 +87,10 @@ public class PlayerData {
                 CustomItem currType;
                 if(se!=null) {
                     currType = new CustomItem(se.getItemStack());
-                    currType.setDisplayName(Msg.SPAWNER_GUI_CURRENT_TYPE_NAME.getMessage(se.toString()));
+                    currType.setDisplayName(Msg.SPAWNER_GUI_CURRENT_TYPE_NAME.getMessage(p, se.toString()));
                 }else{
                     currType = new CustomItem(Material.GLASS, 1);
-                    currType.setDisplayName(Msg.SPAWNER_GUI_CURRENT_TYPE_NAME.getMessage("Unknown Entity"));
+                    currType.setDisplayName(Msg.SPAWNER_GUI_CURRENT_TYPE_NAME.getMessage(p, "Unknown Entity"));
                 }
                 spawnerMenu[currPage].setItem(GUI_SIZE-6, currType.getItemStack());
             }
@@ -116,12 +117,12 @@ public class PlayerData {
             IEconomy price = EconManager.getInstance().getPrice(ent);
             boolean canAfford = price.canBuy(p);
             if(!canAfford) {
-                p.sendMessage(Msg.ECO_TRANSACTION_ERR_INSUFFICIENT_FUNDS.getMessage());
+                p.sendMessage(Msg.ECO_TRANSACTION_ERR_INSUFFICIENT_FUNDS.getMessage(p));
                 CustomSound.TRANSACTION_ERROR.playSound(p);
                 return;
             }
             if(!price.buy(p)) {
-                p.sendMessage(Msg.ECO_TRANSACTION_UNKNOWN_ERR.getMessage());
+                p.sendMessage(Msg.ECO_TRANSACTION_UNKNOWN_ERR.getMessage(p));
                 CustomSound.TRANSACTION_ERROR.playSound(p);
             }else{
                 spawnerChangeSuccess(ent, l, p);
@@ -134,22 +135,22 @@ public class PlayerData {
         sp.setSpawnedType(ent.getType());
         sp.update();
         fillGuisWithItems(sp);
-        p.sendMessage(Msg.ECO_TRANSACTION_SUCCESS.getMessage());
+        p.sendMessage(Msg.ECO_TRANSACTION_SUCCESS.getMessage(p));
         CustomSound.SPAWNER_TYPE_CHANGED.playSound(p);
     }
 
     private ItemStack createGuiItem(SpawnableEntity ent, Player p, boolean isFree) {
         CustomItem ci = new CustomItem(ent.getItemStack());
-        ci.setDisplayName(Msg.SPAWNER_GUI_ITEM_NAME.getMessage(ent.name()));
+        ci.setDisplayName(Msg.SPAWNER_GUI_ITEM_NAME.getMessage(p, ent.name()));
         IEconomy price = EconManager.getInstance().getPrice(ent);
         List<String> l = new ArrayList<>();
         if(price.isFree() || isFree) {
-            l.add(Msg.SPAWNER_GUI_COST_ISFREE.getMessage());
+            l.add(Msg.SPAWNER_GUI_COST_ISFREE.getMessage(p));
         }else{
-            l.add(Msg.SPAWNER_GUI_COST.getMessage(price.getPrice()));
+            l.add(Msg.SPAWNER_GUI_COST.getMessage(p, price.getPrice()));
         }
         l.add("");
-        l.add((price.canBuy(p) || isFree) ? Msg.SPAWNER_GUI_CAN_BUY.getMessage() : Msg.SPAWNER_GUI_CANNOT_BUY.getMessage());
+        l.add((price.canBuy(p) || isFree) ? Msg.SPAWNER_GUI_CAN_BUY.getMessage(p) : Msg.SPAWNER_GUI_CANNOT_BUY.getMessage(p));
         ci.setLore(l);
         return ci.getItemStack();
     }

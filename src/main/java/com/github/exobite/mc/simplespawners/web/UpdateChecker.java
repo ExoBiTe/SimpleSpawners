@@ -56,12 +56,8 @@ public class UpdateChecker {
                         @Override
                         public void run() {
                             StringBuilder sb = new StringBuilder("A new Version (v").append(latestVersion).append(") is available!");
-                            if(updateTitle!=null) {
-                                final String lines = "---------------------------------";
-                                sb.append("\n").append(lines);
-                                sb.append("\nUpdate Content:\n  \"").append(updateTitle).append("\"");
-                                sb.append("\n").append(lines);
-                            }
+                            sb.append("\nDownload it at ").append(PLUGIN_DOWNLOAD_PAGE).append("!");
+                            if(updateTitle!=null) sb.append("\nUpdate Content:\n  \"").append(updateTitle).append("\"");
                             PluginMaster.sendConsoleMessage(Level.INFO, sb.toString());
                         }
                     }.runTask(main);

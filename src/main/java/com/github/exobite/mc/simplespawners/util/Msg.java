@@ -1,8 +1,10 @@
 package com.github.exobite.mc.simplespawners.util;
 
 import com.github.exobite.mc.simplespawners.PluginMaster;
+import me.clip.placeholderapi.PlaceholderAPI;
 import org.bukkit.ChatColor;
 import org.bukkit.configuration.file.YamlConfiguration;
+import org.bukkit.entity.Player;
 
 import java.io.File;
 import java.io.IOException;
@@ -66,6 +68,10 @@ public enum Msg {
             true,
             "Sent to the Player when they use a Feature locked behind a Permission which they don't have"),
 
+    CMD_ERR_UNKNOWN_PLAYER(ChatColor.RED+"Can't find Player '"+ChatColor.GOLD+"%[0]"+ChatColor.RED+"'!",
+            true,
+            "Sent when an unknown Playername is specified in a Command"),
+
     CMD_SS_RELOAD_STARTED(ChatColor.GRAY+"Reloading Plugin Configuration...",
             true,
             "Sent to the Player upon using the '/ss reload'-Command"),
@@ -75,10 +81,12 @@ public enum Msg {
     private static final String FILE_NAME = "lang.yml";
     private static File configFile;
     private static boolean writeComments;
+    private static boolean usePapi;
 
     public static void registerMessages() {
         if(configFile!=null) return; //If configFile is initialized, the class has already been loaded.
         writeComments = PluginMaster.getInstance().writeCommentsToFile();
+        usePapi = PluginMaster.getInstance().usePapi();
         configFile = new File(PluginMaster.getInstance().getDataFolder() + File.separator + FILE_NAME);
         loadMessages();
     }
@@ -154,6 +162,7 @@ public enum Msg {
     private int argAmount;
     private final String comment;
     private final boolean showInFile;
+    private boolean hasPlaceholders;
 
     Msg(String message, boolean showInFile, String comment) {
         this.showInFile = showInFile;
@@ -176,10 +185,13 @@ public enum Msg {
                     "Using the default Message for now...");
             return;
         }
+        if(usePapi) {
+            hasPlaceholders = PlaceholderAPI.containsPlaceholders(msg);
+        }
         message = msg;
     }
 
-    public String getMessage(String ... args) {
+    public String getMessage(Player p, String ... args) {
         if(argAmount==0) return getRawMessage();
         if(args==null || args.length==0) {
             PluginMaster.sendConsoleMessage(Level.WARNING, "Too few args given for Msg '"+this+"' (got 0, expected "+argAmount+")!");
@@ -197,6 +209,7 @@ public enum Msg {
                 msg = msg.replace("%["+i+"]", args[i]);
             }
         }
+        if(hasPlaceholders && p != null) msg = PlaceholderAPI.setPlaceholders(p, msg);
         return ChatColor.translateAlternateColorCodes(Config.getInstance().getColorCode(), msg);
     }
 
