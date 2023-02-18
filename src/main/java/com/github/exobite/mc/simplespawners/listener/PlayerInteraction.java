@@ -52,7 +52,7 @@ public class PlayerInteraction implements Listener {
         PlayerData pd = PlayerDataManager.getInstance().getPlayerData(p.getUniqueId());
         if(!pd.canOpenSpawnerMenu()) return;
         if(inEdit.containsKey(bl)){
-            p.sendMessage(Msg.SPAWNER_ALREADY_IN_EDIT.getMessage(p));
+            p.sendMessage(Msg.SPAWNER_GUI_ALREADY_IN_EDIT.getMessage(p));
             return;
         }
         if(!pd.openSpawnerMenu((CreatureSpawner) e.getClickedBlock().getState(), bl)) {
@@ -83,7 +83,7 @@ public class PlayerInteraction implements Listener {
         ItemMeta im = spawner.getItemMeta();
         assert im != null;
         im.getPersistentDataContainer().set(itemKey, PersistentDataType.STRING, et.toString());
-        im.setLore(List.of(Msg.SPAWN_ITEM_LORE.getMessage(p, et.toString())));
+        im.setLore(List.of(Msg.SPAWNER_ITEM_LORE.getMessage(p, et.toString())));
         spawner.setItemMeta(im);
         if(!Config.getInstance().dropIntoInventory()) {
             dropItem(spawner, e.getBlock().getLocation());

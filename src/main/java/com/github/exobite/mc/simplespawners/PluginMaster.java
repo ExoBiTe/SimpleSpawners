@@ -55,12 +55,11 @@ public class PluginMaster extends JavaPlugin {
         Config.setupConfig(this).loadConfig(false);
         SpawnableEntity.init();
         EconManager.register();
-        getServer().getPluginManager().registerEvents(new DebugListener(), this);
+        //getServer().getPluginManager().registerEvents(new DebugListener(), this);
         interactInst = new PlayerInteraction(this);
         getServer().getPluginManager().registerEvents(interactInst, this);
         getServer().getPluginCommand("simplespawners").setExecutor(new SimpleSpawnersCmd());
         enableMetrics();
-        //TODO: Add checkForUpdate when RESOURCE_ID is known!
         checkForUpdate();
         sendConsoleMessage(Level.INFO, "Running (took "+(System.currentTimeMillis()-t1)+"ms)!");
     }

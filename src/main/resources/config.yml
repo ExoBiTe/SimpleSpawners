@@ -1,26 +1,21 @@
-#Configuration file for SimpleSpawners by ExoBiTe @ spigoturl
+#Configuration file for SimpleSpawners by ExoBiTe @ https://www.spigotmc.org/resources/108088/
 
 #If this is true, mined Spawners drop directly into the Miners Inventory.
 #Otherwise, they drop as Item where the Spawner was mined.
 DropIntoInventory: false
 
-#Define Item Prices for Entities, that the Player has to Pay in Order to Change the Spawner to the specified Entity.
+#Define Costs for Entities, that the Player has to Pay in Order to Change the Spawner to the specified Entity.
 #If an Entity has no Price specified, the DEFAULT Entry will be applied
-#Format is <ENTITY>: <MATERIAL>, <AMOUNT>
+#There are two Formats:
+#Making Players pay with Items: <ENTITY> : <MATERIAL>, <AMOUNT>
+#Making Players pay with Money (Vault and compatible Economy Plugin needed!): <ENTITY> : <PRICE>
 #You may look up all Materials here: #https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
 #Entities are listed here, but not all are supported by the Plugin: #https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
 #Players with the 'simplespawners.interact.nofees:'-permission won't have to pay anything for every Entity
-ItemPrices:
-  DEFAULT: GOLD_INGOT, 20
-  GIANT: DIAMOND_BLOCK, 64
-
-#The same as ItemPrices, just using the Economy Plugin
-#Needs Vault and an Economy Plugin in order to work!
-#The Format is <ENTITY>: <PRICE>
-#If you have duplicate Entities in EconomyPrices and ItemPrices, the Values from EconomyPrices will be used
-#Players with the 'simplespawners.interact.nofees:'-permission won't have to pay anything for every Entity
-EconomyPrices:
-  ZOMBIE: 20.0
+EntityPrices:
+  DEFAULT: GOLD_INGOT, 20     #Default entry applied to all Entites not listed here
+  GIANT: DIAMOND_BLOCK, 64    #Changing a Spawner to spawn GIANTS costs 64x Diamond Blocks
+  FIREBALL: 20                #Changing a Spawner to spawn Fireballs costs 20 Economy-Currency - Needs Vault and a compatible Economy Plugin!
 
 #Blacklisted Entities
 #Players with the 'simplespawners.ignoreblacklist'-permission ignore this list

@@ -2,7 +2,8 @@ name: SimpleSpawners
 main: com.github.exobite.mc.simplespawners.PluginMaster
 version: ${project.version}
 author: ExoBiTe
-description: Defaultdesc
+website: https://www.spigotmc.org/resources/108088/
+description: Customizable Spawners
 api-version: 1.17
 softdepend: [Vault, PlaceholderAPI]
 
@@ -37,7 +38,7 @@ permissions:
     description: Allows to change the Spawned Entity for MobSpawners
 
   simplespawners.interact.nofees:
-    description: Allows to change the Spawned Entity for MobSpawners
+    description: Players with this Permission don't have to pay for any Spawner Change
 
   simplespawners.mine.*:
     default: op

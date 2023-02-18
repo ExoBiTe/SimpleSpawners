@@ -111,6 +111,11 @@ public class PlayerData {
             CustomSound.TRANSACTION_ERROR.playSound(p);
             return;
         }
+        if(((CreatureSpawner) l.getBlock().getState()).getSpawnedType()==ent.getType()) {
+            p.sendMessage(Msg.SPAWNER_IS_ALREADY_SAME_TYPE.getMessage(p));
+            CustomSound.TRANSACTION_ERROR.playSound(p);
+            return;
+        }
         if(p.hasPermission(NO_SPAWNER_CHANGE_PRICE)) {
             spawnerChangeSuccess(ent, l, p);
         }else{

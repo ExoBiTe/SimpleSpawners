@@ -16,11 +16,11 @@ import java.util.logging.Level;
 
 public enum Msg {
 
-    SPAWN_ITEM_LORE(ChatColor.GRAY+"Spawns: "+ChatColor.GOLD+"%[0]",
+    SPAWNER_ITEM_LORE(ChatColor.GRAY+"Spawns: "+ChatColor.GOLD+"%[0]",
             true,
             "The Lore of Mined Spawner Items"),
 
-    SPAWNER_ALREADY_IN_EDIT(ChatColor.RED+"You can't edit this spawner, as it is already being edited by someone else!",
+    SPAWNER_GUI_ALREADY_IN_EDIT(ChatColor.RED+"You can't edit this spawner, as it is already being edited by someone else!",
             true,
             "Sent to a Player when they try to edit a Spawner, that is already being edited by someone else"),
 
@@ -51,6 +51,10 @@ public enum Msg {
     SPAWNER_GUI_CURRENT_TYPE_NAME(ChatColor.GOLD+"Current Type: "+ChatColor.AQUA+"%[0]"+ChatColor.GOLD+"!",
             true,
             "The Displayname of the GUI-Item showing the current Spawner Type"),
+
+    SPAWNER_IS_ALREADY_SAME_TYPE(ChatColor.RED+"This is already the current type of the Spawner!",
+            true,
+            "Sent when a Player tries to set a spawner to it's current spawntype"),
 
     ECO_TRANSACTION_ERR_INSUFFICIENT_FUNDS(ChatColor.RED+"Transaction failed, you have insufficient funds",
             true,

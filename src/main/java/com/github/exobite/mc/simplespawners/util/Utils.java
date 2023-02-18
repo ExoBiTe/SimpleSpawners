@@ -2,7 +2,6 @@ package com.github.exobite.mc.simplespawners.util;
 
 import com.github.exobite.mc.simplespawners.PluginMaster;
 import org.bukkit.Bukkit;
-import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.configuration.file.YamlConfiguration;
 import org.bukkit.scheduler.BukkitRunnable;
 
@@ -23,16 +22,8 @@ public class Utils {
 
     private Utils() {}
 
-    public static boolean updateFileVersionDependent(String filename) {
-        //TODO: Maybe Refactor these two Methods into one with a Parameter, as they're nearly identical
-        if(VersionHelper.isEqualOrLarger(VersionHelper.getBukkitVersion(), new Version(1, 18, 0))) {
-            return updateConfigFileWithComments(filename);
-        }else{
-            return fillDefaultFile(filename);
-        }
-    }
-
-    public static boolean updateConfigFileWithComments(String filename) {
+    public static boolean updateConfigurationFile(String filename) {
+        boolean setComments = VersionHelper.isEqualOrLarger(VersionHelper.getBukkitVersion(), new Version(1, 18, 0));
         File f = new File(main.getDataFolder()+File.separator+filename);
         boolean changedFile = false;
         if(!f.exists()) {
@@ -45,6 +36,7 @@ public class Utils {
             for(String key:defaultConf.getKeys(true)) {
                 if(conf.get(key)==null) {
                     conf.set(key, defaultConf.get(key));
+                    if(!setComments) continue;
                     conf.setComments(key, defaultConf.getComments(key));
                     conf.setInlineComments(key, defaultConf.getInlineComments(key));
                     changedFile = true;
@@ -75,46 +67,6 @@ public class Utils {
             throw new IllegalArgumentException("Embedded File "+filename+" not found!\nIs the Jar Modified?");
         }
         return YamlConfiguration.loadConfiguration(new InputStreamReader(is));
-    }
-
-    private static boolean fillDefaultFile(String filePath) {
-        if(main==null) return false;
-        File f = new File(main.getDataFolder()+File.separator+filePath);
-        boolean change = false;
-        if(!f.exists()) {
-            main.saveResource(filePath, true);
-            return true;
-        }
-        InputStream is = getResource(filePath);
-        if(is==null) {
-            PluginMaster.sendConsoleMessage(Level.SEVERE, "Couldn't find "+filePath+" in project files.");
-            return false;
-        }
-        InputStreamReader rd = new InputStreamReader(is);
-        FileConfiguration fcDefault = YamlConfiguration.loadConfiguration(rd);
-        FileConfiguration fc = YamlConfiguration.loadConfiguration(f);
-        for(String key:fcDefault.getKeys(true)) {
-            if(!fc.contains(key)) {
-                change = true;
-                fc.set(key, fcDefault.get(key));
-            }
-        }
-        if(change) {
-            //Save FileConfig to file
-            try {
-                fc.save(f);
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-        return change;
-    }
-
-    public static InputStream getResource(String filename) {
-        if (main == null) {
-            throw new IllegalArgumentException("Main cannot be null");
-        }
-        return main.getResource(filename);
     }
 
     public static int countMatches(String toSearch, String match) {

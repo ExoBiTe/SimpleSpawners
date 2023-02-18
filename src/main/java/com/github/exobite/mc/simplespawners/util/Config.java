@@ -58,6 +58,7 @@ public class Config {
 
         ConfigValue<ConfigurationSection> itemPrices = new ConfigValue<>("ItemPrices", null, ConfigurationSection.class);
         ConfigValue<ConfigurationSection> vaultPrices = new ConfigValue<>("EconomyPrices", null, ConfigurationSection.class);
+        ConfigValue<ConfigurationSection> entityPrices = new ConfigValue<>("EntityPrices", null, ConfigurationSection.class);
 
         ConfigValue<?> getConfigValueByKey(String key) {
             for(ConfigValue<?> v : configValues) {
@@ -119,7 +120,7 @@ public class Config {
     private YamlConfiguration loadConfigFromFile() {
         if(!mainInstance.getDataFolder().exists()) sendInitialStartupMessage();
         File f = new File(mainInstance.getDataFolder() + File.separator + CONF_FILENAME);
-        boolean fileChanged = Utils.updateFileVersionDependent(CONF_FILENAME);
+        boolean fileChanged = Utils.updateConfigurationFile(CONF_FILENAME);
         if(fileChanged) PluginMaster.sendConsoleMessage(Level.INFO, "Your "+CONF_FILENAME+" got updated!");
         return YamlConfiguration.loadConfiguration(f);
     }
@@ -200,6 +201,10 @@ public class Config {
 
     public ConfigurationSection getEconPrices() {
         return currentConf.vaultPrices.value;
+    }
+
+    public ConfigurationSection getEntityPrices() {
+        return currentConf.entityPrices.value;
     }
 
 

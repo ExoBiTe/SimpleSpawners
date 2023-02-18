@@ -130,7 +130,7 @@ public class SimpleSpawnersCmd implements CommandExecutor, TabCompleter {
         im.getPersistentDataContainer().set(
                 new NamespacedKey(PluginMaster.getInstance(), "spawnerType"),
                 PersistentDataType.STRING, EntityType.PIG.toString());
-        im.setLore(List.of(Msg.SPAWN_ITEM_LORE.getMessage(p, EntityType.PIG.toString())));
+        im.setLore(List.of(Msg.SPAWNER_ITEM_LORE.getMessage(p, EntityType.PIG.toString())));
         spawner.setItemMeta(im);
         target.getInventory().addItem(spawner);
     }
