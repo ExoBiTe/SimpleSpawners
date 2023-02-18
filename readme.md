@@ -1,4 +1,4 @@
-# ZombifyVillagers
+# SimpleSpawners
 
 [![Spiget Downloads](https://img.shields.io/spiget/downloads/108088?label=Downloads)](https://www.spigotmc.org/resources/108088/)
 [![Spiget Rating](https://img.shields.io/spiget/stars/108088?color=8132a8&label=Rating)](https://www.spigotmc.org/resources/108088/)

@@ -1,0 +1,172 @@
+[B][SIZE=5]Mine & Modify Spawners to your liking![/SIZE][/B]
+
+This Plugin allows Players to Break Monster Spawners and Modify the spawned Entity.
+You can set a default Price and a Price per Entity, using Vault or by making Players pay with Items.
+
+[B][U][SIZE=4]How to use:[/SIZE][/U][/B]
+Players with the 'simplespawners.mine.natural'-Permission are able to mine Spawners using any Silk Touch Enchanted Pickaxe.
+In order to mine already modified Spawners, Players need the 'simplespawners.mine.custom'-Permission.
+
+Players with the 'simplespawners.interact.changespawner'-Permission can right-click any Spawner and change it's spawner Type.
+
+[B][U]Commands:[/U][/B]
+/SimpleSpawners <reload | give>
+(alias is /ss <reload | give>)
+
+/SimpleSpawners reload:
+Reloads the config.yml File.
+
+/SimpleSpawners give <player>
+Gives the specified Player a Custom Spawner
+
+[SPOILER="Permissions"]
+[code=YAML]Permissions (copied from plugin.yml):
+
+permissions:
+  simplespawners.*:
+    default: op
+    children:
+      simplespawners.cmd.*: true
+      simplespawners.interact.changespawner: true
+      simplespawners.interact.nofees: true
+      simplespawners.mine.*: true
+
+  simplespawners.cmd.*:
+    default: op
+    children:
+      simplespawners.cmd.give: true
+      simplespawners.cmd.reload: true
+
+  simplespawners.cmd.reload:
+    description: Allows usage of /SimpleSpawners reload
+
+  simplespawners.cmd.give:
+    description: Allows usage of /SimpleSpawners give
+
+  simplespawners.interact.changespawner:
+    description: Allows to change the Spawned Entity for MobSpawners
+
+  simplespawners.interact.nofees:
+    description: Players with this Permission don't have to pay for any Spawner Change
+
+  simplespawners.mine.*:
+    default: op
+    children:
+      simplespawners.mine.natural: true
+      simplespawners.mine.custom: true
+
+  simplespawners.mine.natural:
+    description: Allows to break Natural Mob Spawners with a Silk Touch Pickaxe
+
+  simplespawners.mine.custom:
+    description: Allows to break Natural Mob Spawners with a Silk Touch Pickaxe
+
+  simplespawners.ignoreblacklist:
+    description: Allows to set blacklisted Entities to spawners
+[/SPOILER]
+
+[B][U]Configuration:[/U][/B]
+[SPOILER="config.yml"]
+[code=YAML]#If this is true, mined Spawners drop directly into the Miners Inventory.
+#Otherwise, they drop as Item where the Spawner was mined.
+DropIntoInventory: false
+
+#Define Costs for Entities, that the Player has to Pay in Order to Change the Spawner to the specified Entity.
+#If an Entity has no Price specified, the DEFAULT Entry will be applied
+#There are two Formats:
+#Making Players pay with Items: <ENTITY> : <MATERIAL>, <AMOUNT>
+#Making Players pay with Money (Vault and compatible Economy Plugin needed!): <ENTITY> : <PRICE>
+#You may look up all Materials here: #https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/Material.html
+#Entities are listed here, but not all are supported by the Plugin: #https://hub.spigotmc.org/javadocs/bukkit/org/bukkit/entity/EntityType.html
+#Players with the 'simplespawners.interact.nofees:'-permission won't have to pay anything for every Entity
+EntityPrices:
+  DEFAULT: GOLD_INGOT, 20     #Default entry applied to all Entites not listed here
+  GIANT: DIAMOND_BLOCK, 64    #Changing a Spawner to spawn GIANTS costs 64x Diamond Blocks
+  FIREBALL: 20                #Changing a Spawner to spawn Fireballs costs 20 Economy-Currency - Needs Vault and a compatible Economy Plugin!
+
+#Blacklisted Entities
+#Players with the 'simplespawners.ignoreblacklist'-permission ignore this list
+#Be careful with that Permission!
+EntityBlacklist:
+  - PRIMED_TNT
+  - ENDER_DRAGON
+  - CREEPER
+[/code]
+[/SPOILER]
+
+[SPOILER="sounds.yml"]
+[code=YAML]
+# Played when a mined spawner is dropped into the Miners Inventory
+SPAWNER_DROPPED_INTO_INV:
+  sound: ENTITY_ITEM_PICKUP
+  v1: 1.0
+  v2: 1.0
+
+# Played when the Spawner Type has been changed successfully
+SPAWNER_TYPE_CHANGED:
+  sound: ENTITY_EXPERIENCE_ORB_PICKUP
+  v1: 1.0
+  v2: 1.0
+
+# Played when a transaction failed
+TRANSACTION_ERROR:
+  sound: BLOCK_ANVIL_LAND
+  v1: 1.0
+  v2: 0.1
+[/code]
+[/SPOILER]
+
+[SPOILER="lang.yml"]
+This Plugin can use [URL='https://www.spigotmc.org/resources/6245/']PlaceholderAPI [/URL]Placeholders!
+[code=YAML]
+# The Lore of Mined Spawner Items
+SPAWNER_ITEM_LORE: '§7Spawns: §6%[0]'
+
+# Sent to a Player when they try to edit a Spawner, that is already being edited by someone else
+SPAWNER_GUI_ALREADY_IN_EDIT: §cYou can't edit this spawner, as it is already being
+  edited by someone else!
+
+# The Title of the Monster Spawner Change GUI
+SPAWNER_GUI_TITLE: §bMonster Spawner
+
+# The Displayname of all 'Buttons'(Items) in the Spawner GUI
+SPAWNER_GUI_ITEM_NAME: §6Set spawner type to §b%[0]
+
+# The Price-Text for all Buttons in the Spawner GUI
+SPAWNER_GUI_COST: '§6Price: §d%[0]'
+
+# The Price-Text when an Option is Free for all Buttons in the Spawner GUI
+SPAWNER_GUI_COST_ISFREE: '§6Price: §bFREE'
+
+# Is displayed when the Players has enough Funds in order to buy the selected Option
+SPAWNER_GUI_CAN_BUY: §aClick to Buy!
+
+# Is displayed when the Players has not enough Funds in order to buy the selected Option
+SPAWNER_GUI_CANNOT_BUY: §cYou can't afford that!
+
+# The Displayname of the GUI-Item showing the current Spawner Type
+SPAWNER_GUI_CURRENT_TYPE_NAME: '§6Current Type: §b%[0]§6!'
+
+# Sent when a Player tries to set a spawner to it's current spawntype
+SPAWNER_IS_ALREADY_SAME_TYPE: §cThis is already the current type of the Spawner!
+
+# Sent to the Player when the Purchase of an Option fails because the Players hasn't enough funds
+ECO_TRANSACTION_ERR_INSUFFICIENT_FUNDS: §cTransaction failed, you have insufficient
+  funds
+
+# Sent to the Player when an unknown Error during a Purchase occurs
+ECO_TRANSACTION_UNKNOWN_ERR: §cTransaction failed, an unknown error occurred
+
+# Sent to the Player when an option has been purchased successfully
+ECO_TRANSACTION_SUCCESS: §aChanged the Spawner Type successfully!
+
+# Sent to the Player when they use a Feature locked behind a Permission which they don't have
+CMD_ERR_NO_PERMISSION: §cYou don't have the Permission to do that.
+
+# Sent when an unknown Playername is specified in a Command
+CMD_ERR_UNKNOWN_PLAYER: §cCan't find Player '§6%[0]§c'!
+
+# Sent to the Player upon using the '/ss reload'-Command
+CMD_SS_RELOAD_STARTED: §7Reloading Plugin Configuration...
+[/code]
+[/SPOILER]
